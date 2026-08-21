@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Penny Game — Classical vs Quantum</title>
+  <meta name="description" content="Play Meyer's Penny Game — experience classical randomness versus quantum supremacy with Hadamard gates." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* ---- Home-specific ---- */
+    .hero-coin-wrap {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 3rem;
+    }
+    .hero-coin-wrap .coin-scene {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto;
+      animation: heroFloat 3s ease-in-out infinite;
+    }
+    @keyframes heroFloat {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-12px); }
+    }
+    .hero-coin-wrap .coin-face {
+      background: radial-gradient(circle at 35% 30%, #fde68a 0%, #f59e0b 40%, #b45309 100%);
+      box-shadow: 0 0 0 3px #b45309, 0 0 0 5px #f59e0b, 0 0 40px rgba(245,158,11,0.5),
+                  0 0 0 40px rgba(245,158,11,0.05);
+    }
+    .hero-coin-wrap .coin-back {
+      background: radial-gradient(circle at 35% 30%, #e0f7ff 0%, #06b6d4 40%, #0e4a6b 100%);
+      box-shadow: 0 0 0 3px #0891b2, 0 0 0 5px #06b6d4, 0 0 40px rgba(6,182,212,0.5);
+      transform: rotateY(180deg);
+    }
+    .hero-coin-wrap .coin-label { font-size: 2rem; }
+
+    .vs-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin: 0.5rem 0 2.5rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+    .vs-divider::before, .vs-divider::after {
+      content: '';
+      flex: 1;
+      max-width: 120px;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .info-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      text-align: center;
+      transition: var(--transition);
+    }
+    .info-card:hover { border-color: rgba(255,255,255,0.14); transform: translateY(-2px); }
+
+    .info-icon { font-size: 2.5rem; margin-bottom: 0.6rem; display: block; }
+    .info-card h3 { font-size: 1rem; margin-bottom: 0.4rem; }
+    .info-card p  { font-size: 0.88rem; color: var(--text-dim); line-height: 1.5; }
+
+    .quantum-explainer {
+      background: linear-gradient(135deg, rgba(6,182,212,0.06), rgba(139,92,246,0.06));
+      border: 1px solid rgba(6,182,212,0.15);
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      margin: 3rem auto;
+      max-width: 820px;
+      text-align: center;
+    }
+    .quantum-explainer h2 { font-size: 1.4rem; margin-bottom: 1rem; }
+    .quantum-explainer p  { color: var(--text-dim); line-height: 1.7; max-width: 640px; margin: 0 auto 1rem; }
+
+    .formula-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin: 1.5rem 0;
+    }
+    .formula-step {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 1.2rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.95rem;
+      color: var(--q-primary);
+    }
+    .formula-arrow {
+      color: var(--text-muted);
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <span class="nav-logo">⚛ The Penny Game</span>
+    <div class="nav-links">
+      <a href="index.html"     class="nav-link active-classical">Home</a>
+      <a href="classical.html" class="nav-link">Classical</a>
+      <a href="quantum.html"   class="nav-link">Quantum</a>
+    </div>
+  </nav>
+
+  <div class="page">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-badge badge-home">Meyer's Penny Game</div>
+
+      <div class="hero-coin-wrap">
+        <div class="coin-scene">
+          <div class="coin" id="hero-coin">
+            <div class="coin-face">
+              <span class="coin-label">H</span>
+              <span class="coin-sublabel">Heads</span>
+            </div>
+            <div class="coin-back">
+              <span class="coin-label" style="color:#e0f7ff;text-shadow:0 0 10px #06b6d4">⚛</span>
+              <span class="coin-sublabel" style="color:#7dd3fc">Quantum</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h1 class="hero-title">
+        <span class="grad-home">The Penny Game</span>
+      </h1>
+      <p class="hero-subtitle">
+        A demonstration of <strong>quantum supremacy</strong>. Play the classical coin game — then watch a quantum computer win every time using Hadamard superposition.
+      </p>
+    </section>
+
+    <!-- Game Cards -->
+    <div class="game-cards">
+      <a href="classical.html" class="game-card game-card-classical">
+        <span class="game-card-icon" style="color: var(--c-primary)">🪙</span>
+        <h2><span class="grad-classical">Classical Game</span></h2>
+        <p>You vs. a classical computer. The computer picks randomly. Strategy vs. chance — who wins?</p>
+        <span class="win-rate win-rate-classical">~50% win rate</span>
+        <br>
+        <button class="btn btn-classical btn-lg">Play Classical →</button>
+      </a>
+
+      <a href="quantum.html" class="game-card game-card-quantum">
+        <span class="game-card-icon" style="color: var(--q-primary)">⚛️</span>
+        <h2><span class="grad-quantum">Quantum Game</span></h2>
+        <p>You vs. a quantum computer using Hadamard gates. Can <em>any</em> classical strategy beat superposition?</p>
+        <span class="win-rate win-rate-quantum">~100% quantum win rate</span>
+        <br>
+        <button class="btn btn-quantum btn-lg">Play Quantum →</button>
+      </a>
+    </div>
+
+    <div class="vs-divider">vs.</div>
+
+    <!-- How it works -->
+    <div class="container">
+      <h2 class="section-title">How the Game Works</h2>
+      <div class="info-grid">
+        <div class="info-card">
+          <span class="info-icon">🎯</span>
+          <h3>Starting State</h3>
+          <p>The coin begins <strong>Heads</strong>. If it ends Heads, <em>you</em> win. Tails, the computer wins.</p>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">🤫</span>
+          <h3>Secret Moves</h3>
+          <p>You make <strong>two secret moves</strong>: flip or keep. The computer makes one move in between.</p>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">🎲</span>
+          <h3>Classical Computer</h3>
+          <p>The classical computer picks randomly — giving you a genuine 50/50 chance to win.</p>
+        </div>
+        <div class="info-card">
+          <span class="info-icon">⚛️</span>
+          <h3>Quantum Computer</h3>
+          <p>The quantum computer uses <strong>Hadamard gates</strong> — no matter what you do, it collapses to Heads and wins.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quantum Explainer -->
+    <div class="quantum-explainer container">
+      <h2><span class="grad-quantum">The Quantum Advantage</span></h2>
+      <p>
+        In <strong>Meyer's Quantum Penny Game</strong> (1999), a quantum player applies a Hadamard gate twice —
+        placing the coin in superposition, then collapsing it perfectly. No classical strategy can counter this.
+      </p>
+
+      <div class="formula-row">
+        <span class="formula-step">|0⟩ = Heads</span>
+        <span class="formula-arrow">→</span>
+        <span class="formula-step">H|0⟩ = (|0⟩+|1⟩)/√2</span>
+        <span class="formula-arrow">→</span>
+        <span class="formula-step">You: I or X</span>
+        <span class="formula-arrow">→</span>
+        <span class="formula-step" style="color:var(--q-secondary)">H|±⟩ = |0⟩ ✓</span>
+      </div>
+
+      <p style="font-size:0.9rem;">
+        Whether you flip (apply X gate) or keep (identity I), applying H a second time always collapses the state back to <strong>|0⟩ = Heads</strong>. The quantum computer wins every time.
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Built to demonstrate <strong>Meyer's Quantum Penny Game</strong> ·
+        <a href="classical.html">Play Classical</a> ·
+        <a href="quantum.html">Play Quantum</a>
+      </p>
+    </footer>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initParticles('particles-canvas');
+      // Auto-flip hero coin for effect
+      const coin = document.getElementById('hero-coin');
+      let flipped = false;
+      setInterval(() => {
+        flipped = !flipped;
+        coin.style.transition = 'transform 0.7s ease';
+        coin.style.transform  = flipped ? 'rotateY(180deg)' : 'rotateY(0deg)';
+      }, 2800);
+    });
+  </script>
+</body>
+</html>
+

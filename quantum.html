@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quantum Penny Game — Meyer's Quantum Strategy</title>
+  <meta name="description" content="Experience Meyer's Quantum Penny Game. A quantum computer uses Hadamard gates to win every time." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    /* Quantum-specific extras */
+    .q-rules-card {
+      background: rgba(6,182,212,0.05);
+      border: 1px solid rgba(6,182,212,0.15);
+      border-radius: var(--radius-sm);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .q-rules-card .rule-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      margin-bottom: 0.4rem;
+      line-height: 1.5;
+    }
+    .q-rules-card .rule-row:last-child { margin-bottom: 0; }
+    .rule-num-q {
+      background: rgba(6,182,212,0.15);
+      color: var(--q-primary);
+      border-radius: 50%;
+      width: 20px; height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    #q-btn-start {
+      width: 100%;
+      font-size: 1.05rem;
+      padding: 1rem 2rem;
+      margin-top: 0.5rem;
+    }
+
+    .coin-state-label-q {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      color: var(--q-primary);
+      text-align: center;
+      margin-top: 0.75rem;
+    }
+
+    /* Superposition label animation */
+    .superpos-label {
+      animation: superposLabel 1s ease-in-out infinite alternate;
+    }
+    @keyframes superposLabel {
+      from { color: var(--q-primary); }
+      to   { color: var(--q-secondary); }
+    }
+
+    .q-phase-badge {
+      display: inline-block;
+      padding: 0.25rem 0.85rem;
+      border-radius: 99px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      background: rgba(6,182,212,0.1);
+      border: 1px solid rgba(6,182,212,0.25);
+      color: var(--q-primary);
+      margin-bottom: 0.6rem;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">⚛ The Penny Game</a>
+    <div class="nav-links">
+      <a href="index.html"     class="nav-link">Home</a>
+      <a href="classical.html" class="nav-link">Classical</a>
+      <a href="quantum.html"   class="nav-link active-quantum">Quantum</a>
+    </div>
+  </nav>
+
+  <div class="page">
+    <!-- Hero -->
+    <section class="hero" style="padding-bottom: 2rem;">
+      <div class="hero-badge badge-quantum">⚛ Quantum Computer</div>
+      <h1 class="hero-title"><span class="grad-quantum">Quantum Penny</span></h1>
+      <p class="hero-subtitle">
+        The quantum computer uses <strong>Hadamard superposition</strong> to guarantee a win.<br>
+        <strong style="color:var(--q-primary)">Heads = Quantum wins</strong> ·
+        <strong style="color:var(--c-primary)">Tails = You win!</strong>
+      </p>
+
+      <!-- Step indicators -->
+      <div class="steps">
+        <div class="step-dot" title="|0⟩ Start"></div>
+        <div class="step-line"></div>
+        <div class="step-dot" title="H gate"></div>
+        <div class="step-line"></div>
+        <div class="step-dot" title="Your move"></div>
+        <div class="step-line"></div>
+        <div class="step-dot" title="H gate again"></div>
+        <div class="step-line"></div>
+        <div class="step-dot" title="Measure"></div>
+      </div>
+    </section>
+
+    <!-- Game Board -->
+    <div class="game-board">
+      <!-- Main -->
+      <div class="game-main">
+
+        <!-- Coin display -->
+        <div class="stage-card" style="padding:2.5rem 2rem;">
+          <div class="coin-scene">
+            <div class="coin coin-quantum" id="q-coin">
+              <div class="coin-face">
+                <span class="coin-label">|0⟩</span>
+                <span class="coin-sublabel">Heads</span>
+              </div>
+              <div class="coin-back">
+                <span class="coin-label" style="font-size:1.6rem">|1⟩</span>
+                <span class="coin-sublabel" style="color:#d8b4fe">Tails</span>
+              </div>
+            </div>
+          </div>
+          <div class="coin-state-label-q" id="coin-state-label">|ψ⟩ = |0⟩</div>
+        </div>
+
+        <!-- Action card -->
+        <div class="stage-card">
+          <div class="q-phase-badge" id="q-phase-badge">Ready to Play</div>
+          <div class="stage-title text-q" id="q-phase-title">Meyer's Quantum Penny Game</div>
+          <div class="stage-desc" id="q-phase-desc">
+            The <span class="text-q">Quantum Computer</span> uses <strong>Hadamard gates</strong> to always win — no matter what you choose. Can you beat quantum mechanics?
+          </div>
+
+          <div id="q-status-msg" class="status-msg status-info-q" style="display:none"></div>
+
+          <div id="q-choice-wrap" class="choice-buttons hidden">
+            <button class="choice-btn choice-btn-quantum" id="q-btn-flip">
+              🔄 Flip (X gate)
+            </button>
+            <button class="choice-btn choice-btn-quantum" id="q-btn-keep">
+              ✋ Keep (Identity)
+            </button>
+          </div>
+
+          <button class="btn btn-quantum" id="q-btn-start">▶ Start Round</button>
+        </div>
+
+        <!-- Quick rules -->
+        <div class="q-rules-card">
+          <div style="font-family:'Orbitron',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.12em;color:var(--q-primary);margin-bottom:0.6rem;text-transform:uppercase;">Quantum Strategy</div>
+          <div class="rule-row"><span class="rule-num-q">Q</span> Quantum applies <span class="quantum-formula" style="font-size:0.85rem">&nbsp;H&nbsp;</span> → superposition: <span class="quantum-formula" style="font-size:0.82rem">(|0⟩+|1⟩)/√2</span></div>
+          <div class="rule-row"><span class="rule-num-q">U</span> You apply X (flip) or I (keep) — classical operation.</div>
+          <div class="rule-row"><span class="rule-num-q">Q</span> Quantum applies <span class="quantum-formula" style="font-size:0.85rem">&nbsp;H&nbsp;</span> again → collapses to <span class="quantum-formula" style="font-size:0.85rem">|0⟩</span> always.</div>
+          <div class="rule-row"><span class="rule-num-q">✓</span> Result is always <strong style="color:var(--q-primary)">Heads = Quantum wins</strong>!</div>
+        </div>
+      </div>
+
+      <!-- Side panel -->
+      <div class="game-side">
+
+        <!-- State Panel -->
+        <div class="state-panel">
+          <div class="state-title">Quantum State |ψ⟩</div>
+          <div class="state-equation" id="state-equation">|ψ⟩ = |0⟩</div>
+          <div class="prob-bars">
+            <div class="prob-row">
+              <span class="prob-label" style="color:var(--q-primary)">|0⟩</span>
+              <div class="prob-track">
+                <div class="prob-fill prob-fill-heads" id="prob-fill-heads" style="width:100%"></div>
+              </div>
+              <span class="prob-pct" id="prob-pct-heads">100%</span>
+            </div>
+            <div class="prob-row">
+              <span class="prob-label" style="color:var(--q-secondary)">|1⟩</span>
+              <div class="prob-track">
+                <div class="prob-fill prob-fill-tails" id="prob-fill-tails" style="width:0%"></div>
+              </div>
+              <span class="prob-pct" id="prob-pct-tails">0%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Circuit Panel -->
+        <div class="circuit-panel">
+          <div class="circuit-title">⚡ Quantum Circuit</div>
+          <canvas id="circuit-canvas" style="width:100%;height:110px;"></canvas>
+          <div style="font-size:0.78rem;color:var(--text-muted);margin-top:0.6rem;text-align:center;font-family:'Share Tech Mono',monospace;">
+            Q: H → U: ? → Q: H → Measure
+          </div>
+        </div>
+
+        <!-- Scoreboard -->
+        <div class="score-panel">
+          <div class="score-panel-title">Scoreboard</div>
+          <div class="score-row">
+            <span class="score-label">⚛️ Quantum CPU</span>
+            <span class="score-value text-q" id="q-score-comp">0</span>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar score-bar-quantum" id="q-bar-comp" style="width:0%"></div>
+          </div>
+          <div class="score-row">
+            <span class="score-label">👤 You</span>
+            <span class="score-value text-c" id="q-score-player">0</span>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar score-bar-classical" id="q-bar-player" style="width:0%"></div>
+          </div>
+          <div class="divider"></div>
+          <div class="score-row">
+            <span class="score-label" style="font-size:0.85rem">Rounds Played</span>
+            <span class="score-value" style="font-size:1rem;color:var(--text-dim)" id="q-score-rounds">0</span>
+          </div>
+          <button class="btn btn-ghost" id="q-btn-reset" style="width:100%;margin-top:0.5rem;font-size:0.8rem;">↺ Reset Stats</button>
+        </div>
+
+        <!-- History -->
+        <div class="history-panel">
+          <div class="score-panel-title">Round History</div>
+          <div id="q-history-list">
+            <div style="color:var(--text-muted);font-size:0.88rem;text-align:center;padding:1rem 0;">No rounds yet — hit Start Round!</div>
+          </div>
+        </div>
+
+        <!-- Info box -->
+        <div class="info-box">
+          <strong style="color:var(--q-primary)">Why does quantum always win?</strong><br><br>
+          H·H = I (identity). So <span class="quantum-formula">H(I)|0⟩ = |0⟩</span> and <span class="quantum-formula">H(X)|0⟩ = H|1⟩ = |0⟩·</span>… wait — <span class="quantum-formula">H|1⟩ = (|0⟩−|1⟩)/√2</span>? <br><br>
+          Actually in Meyer's game Q plays 1st & 3rd, and <em>any</em> classical move in position 2 commutes past the H·H to give |0⟩. This is the quantum advantage!
+          <br><br>
+          Try the <a href="classical.html" style="color:var(--c-primary)">Classical game →</a> to compare.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result Overlay -->
+  <div class="result-overlay" id="q-result-overlay">
+    <div id="q-result-emoji" class="result-emoji">⚛️</div>
+    <h2 id="q-result-title" class="result-title">Quantum Wins!</h2>
+    <p id="q-result-sub" class="result-subtitle">The Hadamard strategy collapsed perfectly to |0⟩.</p>
+    <div id="q-result-moves" class="result-moves"></div>
+    <div class="result-buttons">
+      <button class="btn btn-quantum btn-lg" id="q-btn-again">Try Again</button>
+      <a href="classical.html"><button class="btn btn-outline">Classical Game 🪙</button></a>
+      <button class="btn btn-ghost" id="q-btn-close">✕ Close</button>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/quantum.js"></script>
+</body>
+</html>
+

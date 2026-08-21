@@ -1,0 +1,17 @@
+{
+  "name": "penny-game",
+  "version": "1.0.0",
+  "description": "Meyer's Quantum Penny Game — Classical vs Quantum demonstration",
+  "private": true,
+  "scripts": {
+    "dev": "npx serve . -p 3000",
+    "build": "echo 'Static site — no build step needed'",
+    "start": "npx serve . -p 3000"
+  },
+  "devDependencies": {
+    "serve": "^14.2.3"
+  },
+  "keywords": ["quantum", "penny-game", "meyers-game", "hadamard", "superposition"],
+  "license": "MIT"
+}
+

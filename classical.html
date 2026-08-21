@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Classical Penny Game</title>
+  <meta name="description" content="Play the classical version of Meyer's Penny Game. You vs a random computer." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .rules-card {
+      background: rgba(245,158,11,0.05);
+      border: 1px solid rgba(245,158,11,0.15);
+      border-radius: var(--radius-sm);
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .rules-card .rule-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      margin-bottom: 0.4rem;
+      line-height: 1.5;
+    }
+    .rules-card .rule-row:last-child { margin-bottom: 0; }
+    .rule-num {
+      background: rgba(245,158,11,0.15);
+      color: var(--c-primary);
+      border-radius: 50%;
+      width: 20px; height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .coin-state-label {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 0.75rem;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <a href="index.html" class="nav-logo">⚛ The Penny Game</a>
+    <div class="nav-links">
+      <a href="index.html"     class="nav-link">Home</a>
+      <a href="classical.html" class="nav-link active-classical">Classical</a>
+      <a href="quantum.html"   class="nav-link">Quantum</a>
+    </div>
+  </nav>
+
+  <div class="page">
+    <!-- Hero -->
+    <section class="hero" style="padding-bottom: 2rem;">
+      <div class="hero-badge badge-classical">Classical Computer</div>
+      <h1 class="hero-title"><span class="grad-classical">Penny Flip</span></h1>
+      <p class="hero-subtitle">
+        Make two secret moves around the computer's random choice.<br>
+        <strong style="color:var(--c-primary)">Heads = You Win</strong> ·
+        <strong style="color:#f87171">Tails = Computer Wins</strong>
+      </p>
+
+      <!-- Step indicators -->
+      <div class="steps">
+        <div class="step-dot active-c" title="Your first move"></div>
+        <div class="step-line"></div>
+        <div class="step-dot" title="Computer's move"></div>
+        <div class="step-line"></div>
+        <div class="step-dot" title="Your second move"></div>
+        <div class="step-line"></div>
+        <div class="step-dot" title="Reveal"></div>
+      </div>
+    </section>
+
+    <!-- Game Board -->
+    <div class="game-board">
+      <!-- Main -->
+      <div class="game-main">
+
+        <!-- Coin display -->
+        <div class="stage-card" style="padding: 2.5rem 2rem;">
+          <div class="coin-scene">
+            <div class="coin" id="coin">
+              <div class="coin-face">
+                <span class="coin-label">H</span>
+                <span class="coin-sublabel">Heads</span>
+              </div>
+              <div class="coin-back">
+                <span class="coin-label">T</span>
+                <span class="coin-sublabel">Tails</span>
+              </div>
+            </div>
+          </div>
+          <div class="coin-state-label">Starting position: Heads</div>
+        </div>
+
+        <!-- Action card -->
+        <div class="stage-card">
+          <div class="stage-title text-c" id="phase-title">Your First Move</div>
+          <div class="stage-desc" id="phase-desc">
+            The coin starts <strong>HEADS</strong>. Your move is secret — the computer won't see it.
+          </div>
+
+          <div id="status-msg" class="status-msg status-info-c" style="display:none"></div>
+
+          <div id="choice-wrap" class="choice-buttons">
+            <button class="choice-btn choice-btn-classical" id="btn-flip">
+              🔄 Flip
+            </button>
+            <button class="choice-btn choice-btn-classical" id="btn-keep">
+              ✋ Keep
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick rules (collapsible feel) -->
+        <div class="rules-card">
+          <div style="font-family:'Orbitron',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.12em;color:var(--c-primary);margin-bottom:0.6rem;text-transform:uppercase;">How to Win</div>
+          <div class="rule-row"><span class="rule-num">1</span> Coin starts <strong>Heads</strong>. You make a secret move.</div>
+          <div class="rule-row"><span class="rule-num">2</span> The computer makes a random move (you don't see it).</div>
+          <div class="rule-row"><span class="rule-num">3</span> You make a second secret move.</div>
+          <div class="rule-row"><span class="rule-num">4</span> Reveal — <strong style="color:var(--c-primary)">Heads = You win</strong> · <strong style="color:#f87171">Tails = Computer wins</strong></div>
+        </div>
+      </div>
+
+      <!-- Side panel -->
+      <div class="game-side">
+
+        <!-- Scoreboard -->
+        <div class="score-panel">
+          <div class="score-panel-title">Scoreboard</div>
+          <div class="score-row">
+            <span class="score-label">👤 You</span>
+            <span class="score-value text-c" id="score-you">0</span>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar score-bar-classical" id="score-bar-you" style="width:0%"></div>
+          </div>
+          <div class="score-row">
+            <span class="score-label">💻 Computer</span>
+            <span class="score-value" style="color:#f87171" id="score-comp">0</span>
+          </div>
+          <div class="score-bar-wrap">
+            <div class="score-bar" style="background:linear-gradient(90deg,#b91c1c,#f87171)" id="score-bar-comp" style="width:0%"></div>
+          </div>
+          <div class="divider"></div>
+          <div class="score-row">
+            <span class="score-label" style="font-size:0.85rem">Rounds Played</span>
+            <span class="score-value" style="font-size:1rem;color:var(--text-dim)" id="score-rounds">0</span>
+          </div>
+          <button class="btn btn-ghost" id="btn-reset" style="width:100%;margin-top:0.5rem;font-size:0.8rem;">↺ Reset Stats</button>
+        </div>
+
+        <!-- History -->
+        <div class="history-panel">
+          <div class="score-panel-title">Round History</div>
+          <div id="history-list">
+            <div style="color:var(--text-muted);font-size:0.88rem;text-align:center;padding:1rem 0;">No rounds yet — make your first move!</div>
+          </div>
+        </div>
+
+        <!-- Info -->
+        <div class="info-box">
+          <strong>Remember:</strong> The computer picks <em>randomly</em>. With a perfect counter-strategy you could win more — but over many rounds it tends toward 50/50.
+          <br><br>
+          Compare with the <a href="quantum.html" style="color:var(--q-primary)">Quantum game →</a> where the computer always wins.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result Overlay -->
+  <div class="result-overlay" id="result-overlay">
+    <div id="result-emoji" class="result-emoji">🎉</div>
+    <h2 id="result-title" class="result-title">You Win!</h2>
+    <p id="result-sub" class="result-subtitle">The coin landed Heads!</p>
+    <div id="result-moves" class="result-moves"></div>
+    <div class="result-buttons">
+      <button class="btn btn-classical btn-lg" id="btn-play-again">Play Again</button>
+      <a href="quantum.html"><button class="btn btn-outline">Try Quantum ⚛️</button></a>
+      <button class="btn btn-ghost" id="btn-close-result">✕ Close</button>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/classical.js"></script>
+</body>
+</html>
+
