@@ -15,6 +15,19 @@ const LIVE_CLEANUP_MS = 60 * 60 * 1000;
 const LIVE_ACTIVITY_TTL_MS = 24 * 60 * 60 * 1000;
 const LIVE_LEADERBOARD_LIMIT = 12;
 
+/* ---- Server sync (GitHub-backed JSON file, shared across ALL visitors) ---- */
+const SERVER_API = {
+  leaderboard: '/api/leaderboard',
+  record: '/api/record',
+};
+const SERVER_POLL_MS = 8000;
+
+// null = not checked yet, true = server sync live, false = local-only fallback
+let serverConfigured = null;
+let serverPollTimer = null;
+let serverLeaderboard = null;
+let serverActivity = null;
+
 function safeParse(raw, fallback) {
   try {
     return raw ? JSON.parse(raw) : fallback;
@@ -396,11 +409,83 @@ function appendActivityEntry(entry) {
   saveActivityFeed(pruneActivity(feed));
 }
 
+/** Pull the shared cross-user board from the server (GitHub-backed JSON).
+ *  Silently falls back to local-only mode if the API isn't reachable or
+ *  isn't configured (e.g. running via plain `npx serve` with no /api
+ *  routes, or GITHUB_TOKEN not set yet). */
+async function fetchServerBoard() {
+  try {
+    const res = await fetch(SERVER_API.leaderboard, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`status ${res.status}`);
+    const json = await res.json();
+    if (json.configured === false) {
+      serverConfigured = false;
+      return null;
+    }
+    serverConfigured = true;
+    serverLeaderboard = Array.isArray(json.leaderboard) ? json.leaderboard : [];
+    serverActivity = Array.isArray(json.activity) ? json.activity : [];
+    return json;
+  } catch {
+    serverConfigured = false;
+    return null;
+  }
+}
+
+/** Push a finished round to the server so it's visible to every visitor,
+ *  not just this browser. Non-blocking — the local UI already updated. */
+async function postServerRound(payload) {
+  try {
+    const res = await fetch(SERVER_API.record, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(`status ${res.status}`);
+    const json = await res.json();
+    if (json.configured === false) {
+      serverConfigured = false;
+      return null;
+    }
+    serverConfigured = true;
+    serverLeaderboard = Array.isArray(json.leaderboard) ? json.leaderboard : serverLeaderboard;
+    serverActivity = Array.isArray(json.activity) ? json.activity : serverActivity;
+    return json;
+  } catch {
+    // Keep whatever serverConfigured state we already had — a single
+    // failed request shouldn't flip a working server back to "local only".
+    return null;
+  }
+}
+
+function startServerPolling() {
+  if (serverPollTimer) clearInterval(serverPollTimer);
+  serverPollTimer = setInterval(async () => {
+    const before = serverConfigured;
+    await fetchServerBoard();
+    if (serverConfigured) queueLiveRefresh();
+    else if (before !== serverConfigured) queueLiveRefresh();
+  }, SERVER_POLL_MS);
+}
+
+function updateSyncStatus() {
+  const nodes = document.querySelectorAll('[data-sync-status]');
+  if (!nodes.length) return;
+
+  let text;
+  if (serverConfigured === true) text = 'Live · synced across all players';
+  else if (serverConfigured === false) text = 'Local device only (server sync not set up)';
+  else text = 'Checking live sync…';
+
+  nodes.forEach((node) => { node.textContent = text; });
+}
+
 function recordRound({ mode, winner, playerName, resultCoin, summary }) {
   const safeName = normalizePlayerName(playerName || getActivePlayerName());
   const activitySummary = summary || `${safeName} ${winner === 'player' ? 'won' : 'lost'} a ${mode} round.`;
   const createdAt = new Date().toISOString();
 
+  // Always update the local view immediately so the UI feels instant.
   upsertLeaderboardEntry({ playerName: safeName, mode, winner });
   appendActivityEntry({
     id: createId('activity'),
@@ -412,6 +497,12 @@ function recordRound({ mode, winner, playerName, resultCoin, summary }) {
     summary: activitySummary,
   });
 
+  // Also push to the shared server board (GitHub-backed JSON file) so
+  // every visitor — not just this browser — sees the round. Fire and
+  // forget: don't block the UI on the network round-trip.
+  postServerRound({ playerName: safeName, mode, winner, resultCoin, summary: activitySummary })
+    .then(() => queueLiveRefresh());
+
   queueLiveRefresh();
   return { playerName: safeName, mode, winner, resultCoin, summary: activitySummary };
 }
@@ -420,7 +511,9 @@ function renderLeaderboard(target) {
   const el = resolveElement(target);
   if (!el) return;
 
-  const entries = getLeaderboard();
+  const entries = serverConfigured === true && Array.isArray(serverLeaderboard)
+    ? serverLeaderboard
+    : getLeaderboard();
   if (!entries.length) {
     el.innerHTML = '<div class="empty-state">No players yet. Register a name to claim the first spot.</div>';
     return;
@@ -453,7 +546,9 @@ function renderActivityFeed(target) {
   const el = resolveElement(target);
   if (!el) return;
 
-  const entries = getActivityFeed();
+  const entries = serverConfigured === true && Array.isArray(serverActivity)
+    ? serverActivity
+    : getActivityFeed();
   if (!entries.length) {
     el.innerHTML = '<div class="empty-state">Live activity will appear here once people start playing.</div>';
     return;
@@ -526,6 +621,7 @@ function renderAllLiveWidgets() {
   document.querySelectorAll('[data-leaderboard]').forEach((node) => renderLeaderboard(node));
   document.querySelectorAll('[data-activity-feed]').forEach((node) => renderActivityFeed(node));
   updateThemeToggleLabel();
+  updateSyncStatus();
 }
 
 function queueLiveRefresh() {
@@ -581,6 +677,13 @@ document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   ensureLiveSync();
   renderAllLiveWidgets();
+
+  // Check server sync once on load, render again once we know the
+  // real cross-user state, then keep polling for other players' rounds.
+  fetchServerBoard().then(() => {
+    renderAllLiveWidgets();
+    startServerPolling();
+  });
 });
 
 window.PennyGameLive = {
@@ -594,4 +697,6 @@ window.PennyGameLive = {
   renderAllLiveWidgets,
   renderLeaderboard,
   renderActivityFeed,
+  fetchServerBoard,
+  isServerConfigured: () => serverConfigured,
 };
