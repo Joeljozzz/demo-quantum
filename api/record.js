@@ -154,18 +154,32 @@ module.exports = async function handler(req, res) {
     return data;
   }
 
+  // Concurrent writers racing to commit the same file will 409/422 on a
+  // stale `sha`. Refetch + retry a few times with jitter before giving up —
+  // a single retry isn't enough once multiple people play at once, and a
+  // silent failure here is exactly what makes rounds "vanish" server-side
+  // while still looking fine in the player's own local UI.
+  const MAX_ATTEMPTS = 5;
+
   try {
     let data;
-    try {
-      data = await applyUpdate();
-    } catch (err) {
-      // Someone else committed in the meantime — refetch sha & retry once.
-      if (err.status === 409 || err.status === 422) {
+    let lastErr;
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
+      try {
         data = await applyUpdate();
-      } else {
+        lastErr = null;
+        break;
+      } catch (err) {
+        lastErr = err;
+        if (err.status === 409 || err.status === 422) {
+          const backoff = 60 + Math.random() * 120 * attempt;
+          await new Promise((resolve) => setTimeout(resolve, backoff));
+          continue;
+        }
         throw err;
       }
     }
+    if (lastErr) throw lastErr;
 
     res.setHeader('Cache-Control', 'no-store');
     res.status(200).json({ ok: true, configured: true, ...data });

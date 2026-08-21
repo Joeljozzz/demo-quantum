@@ -420,14 +420,18 @@ async function fetchServerBoard() {
     const json = await res.json();
     if (json.configured === false) {
       serverConfigured = false;
+      console.warn(
+        '[PennyGame] Server sync not configured — set GITHUB_TOKEN / GITHUB_OWNER / GITHUB_REPO in Vercel env vars. Falling back to local-only leaderboard.'
+      );
       return null;
     }
     serverConfigured = true;
     serverLeaderboard = Array.isArray(json.leaderboard) ? json.leaderboard : [];
     serverActivity = Array.isArray(json.activity) ? json.activity : [];
     return json;
-  } catch {
+  } catch (err) {
     serverConfigured = false;
+    console.error('[PennyGame] fetchServerBoard failed — is /api/leaderboard reachable?', err);
     return null;
   }
 }
@@ -441,19 +445,30 @@ async function postServerRound(payload) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    if (!res.ok) throw new Error(`status ${res.status}`);
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      throw new Error(`status ${res.status} ${text}`.trim());
+    }
     const json = await res.json();
     if (json.configured === false) {
       serverConfigured = false;
+      console.warn(
+        '[PennyGame] Round NOT written to remote leaderboard — server sync is not configured (missing GITHUB_TOKEN/OWNER/REPO on the server).'
+      );
+      return null;
+    }
+    if (json.ok === false) {
+      console.error('[PennyGame] Round rejected by /api/record:', json.error);
       return null;
     }
     serverConfigured = true;
     serverLeaderboard = Array.isArray(json.leaderboard) ? json.leaderboard : serverLeaderboard;
     serverActivity = Array.isArray(json.activity) ? json.activity : serverActivity;
     return json;
-  } catch {
+  } catch (err) {
     // Keep whatever serverConfigured state we already had — a single
     // failed request shouldn't flip a working server back to "local only".
+    console.error('[PennyGame] postServerRound failed — round only saved locally for this browser.', err);
     return null;
   }
 }
