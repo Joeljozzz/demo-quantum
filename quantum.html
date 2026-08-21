@@ -7,81 +7,11 @@
   <meta name="description" content="Experience Meyer's Quantum Penny Game. A quantum computer uses Hadamard gates to win every time." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
-  <style>
-    /* Quantum-specific extras */
-    .q-rules-card {
-      background: rgba(0,75,135,0.05);
-      border: 1px solid rgba(0,75,135,0.16);
-      border-radius: var(--radius-sm);
-      padding: 1rem 1.25rem;
-      margin-bottom: 1rem;
-    }
-    .q-rules-card .rule-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.6rem;
-      font-size: 0.88rem;
-      color: var(--text-dim);
-      margin-bottom: 0.4rem;
-      line-height: 1.5;
-    }
-    .q-rules-card .rule-row:last-child { margin-bottom: 0; }
-    .rule-num-q {
-      background: rgba(0,75,135,0.12);
-      color: var(--q-primary);
-      border-radius: 50%;
-      width: 20px; height: 20px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-      font-weight: 700;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
-    #q-btn-start {
-      width: 100%;
-      font-size: 1.05rem;
-      padding: 1rem 2rem;
-      margin-top: 0.5rem;
-    }
-
-    .coin-state-label-q {
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.85rem;
-      letter-spacing: 0.05em;
-      color: var(--q-primary);
-      text-align: center;
-      margin-top: 0.75rem;
-    }
-
-    /* Superposition label animation */
-    .superpos-label {
-      animation: superposLabel 1s ease-in-out infinite alternate;
-    }
-    @keyframes superposLabel {
-      from { color: var(--q-primary); }
-      to   { color: var(--q-secondary); }
-    }
-
-    .q-phase-badge {
-      display: inline-block;
-      padding: 0.25rem 0.85rem;
-      border-radius: 99px;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 0.78rem;
-      letter-spacing: 0.05em;
-      background: rgba(6,182,212,0.1);
-      border: 1px solid rgba(6,182,212,0.25);
-      color: var(--q-primary);
-      margin-bottom: 0.6rem;
-    }
-  </style>
 </head>
 <body>
+  <div class="mt-brand-strip"></div>
   <canvas id="particles-canvas"></canvas>
 
   <!-- Nav -->
@@ -205,7 +135,7 @@
 
         <!-- Quick rules -->
         <div class="q-rules-card">
-          <div style="font-family:'Orbitron',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.12em;color:var(--q-primary);margin-bottom:0.6rem;text-transform:uppercase;">Quantum Strategy</div>
+          <div style="font-family:var(--font-family-bold);font-size:0.75rem;font-weight:700;letter-spacing:0.12em;color:var(--q-primary);margin-bottom:0.6rem;text-transform:uppercase;">Quantum Strategy</div>
           <div class="rule-row"><span class="rule-num-q">Q</span> Quantum applies <span class="quantum-formula" style="font-size:0.85rem">&nbsp;H&nbsp;</span> → superposition: <span class="quantum-formula" style="font-size:0.82rem">(|0⟩+|1⟩)/√2</span></div>
           <div class="rule-row"><span class="rule-num-q">U</span> You apply X (flip) or I (keep) — classical operation.</div>
           <div class="rule-row"><span class="rule-num-q">Q</span> Quantum applies <span class="quantum-formula" style="font-size:0.85rem">&nbsp;H&nbsp;</span> again → collapses to <span class="quantum-formula" style="font-size:0.85rem">|0⟩</span> always.</div>

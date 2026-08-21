@@ -1,93 +1,247 @@
 /* ============================================================
    THE PENNY GAME — Meyer's Classical vs Quantum Demo
-   Shared Styles — Crisp Mettler Toledo navy-on-white theme
+   Shared Styles — METTLER TOLEDO Corporate Design theme
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+/* Share Tech Mono is kept only for the quantum state-vector/formula
+   displays (mathematical notation) — everything else uses the
+   corporate Arial/Avant Garde stack, no other decorative webfonts. */
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
-/* ---------- CSS Variables ---------- */
+/* =====================================================================
+   METTLER TOLEDO Corporate Design Tokens
+   Source: CD_01_Colors_Typefaces_Trademarks.pdf
+           "Corporate Design | 2026 | Colors, Typefaces, and Trademarks"
+   Scope:  FRRB HTML prototype UI + exported PDF summary.
+   Notes:
+     - Only values explicitly defined in the corporate guide are encoded.
+     - Web/screen contexts use the RGB/Hex values from the guide.
+     - Tints are linear screen approximations of the printed % tints
+       described in "Lightened Tones for Graphic Elements".
+     - Do not use italics, underlines, or shadows except for hyperlinks
+       in body copy and mathematical symbols (per guide, page 10).
+   ===================================================================== */
+
 :root {
   color-scheme: light;
 
-  /* Mettler Toledo brand palette — two accents only: navy + teal */
-  --mt-navy: #0b2d4d;         /* deep brand navy */
-  --mt-navy-light: #1c4870;   /* lighter navy for hovers/accents */
-  --mt-teal: #0c8b90;         /* brand teal */
-  --mt-teal-dark: #076468;    /* darker teal for hovers */
+  /* ---------- Corporate Colors (screen / RGB + Hex) ----------------- */
+  /* Primary */
+  --mt-blue:        #004494;   /* RGB 0 68 148   | CMYK 100/79/0/0 | Pantone 287 */
+  --mt-cyan:        #009CDD;   /* RGB 0 156 221  | CMYK 100/0/0/0  | Pantone Cyan */
+  --mt-green:       #6AB023;   /* RGB 106 176 35 | CMYK 65/0/100/0 | Pantone 369 */
 
-  --bg: #ffffff;
-  --bg-page: #ffffff;
-  --bg-alt: #f4f7fa;          /* subtle section tint, used sparingly */
-  --bg-card: #ffffff;
-  --bg-glass: rgba(11, 45, 77, 0.035);
-  --border: #dde4ec;
-  --border-strong: #c3ccd8;
-  --shadow: 0 10px 28px rgba(11, 45, 77, 0.08);
-  --shadow-sm: 0 4px 14px rgba(11, 45, 77, 0.06);
+  /* Additional */
+  --mt-white:       #FFFFFF;   /* RGB 255 255 255 */
+  --mt-gray:        #DADADA;   /* RGB 218 218 218 | CMYK 0/0/0/20 */
 
-  /* Brand-adapted colors: classical = teal, quantum = navy */
-  --c-primary: var(--mt-teal);
-  --c-secondary: var(--mt-teal-dark);
-  --c-glow: rgba(12, 139, 144, 0.16);
+  /* ---------- Cyan tints (from Cyan Gradient, p.7) ------------------ */
+  --mt-cyan-80:     #33B0E3;
+  --mt-cyan-70:     #4DBAE7;
+  --mt-cyan-60:     #66C4EB;
+  --mt-cyan-50:     #80CEEE;
+  --mt-cyan-40:     #99D7F1;
+  --mt-cyan-30:     #B3E1F5;
+  --mt-cyan-20:     #CCEBF8;
+  --mt-cyan-10:     #E6F5FC;
 
-  --q-primary: var(--mt-navy);
-  --q-secondary: var(--mt-navy-light);
-  --q-glow: rgba(11, 45, 77, 0.14);
+  /* ---------- Green tints (from MT Green Gradient, p.7) ------------- */
+  --mt-green-80:    #88BF4F;
+  --mt-green-70:    #97C766;
+  --mt-green-60:    #A6CF7B;
+  --mt-green-50:    #B5D791;
+  --mt-green-40:    #C3DFA7;
+  --mt-green-30:    #D2E7BD;
+  --mt-green-20:    #E1EFD3;
+  --mt-green-10:    #F0F7E9;
 
-  /* Semantic loss/danger color (crisp, not neon) */
-  --danger: #b3261e;
+  /* ---------- Grayscale (from Black and Grayscale gradient, p.7) ---- */
+  --mt-black:       #000000;
+  --mt-gray-80:     #333333;
+  --mt-gray-70:     #4D4D4D;
+  --mt-gray-60:     #666666;
+  --mt-gray-50:     #808080;
+  --mt-gray-40:     #999999;
+  --mt-gray-30:     #B3B3B3;
+  --mt-gray-20:     #CCCCCC;
+  --mt-gray-10:     #E6E6E6;
+
+  /* ---------- Semantic UI roles (mapped to corporate colors) -------- */
+  --color-bg:               var(--mt-white);
+  --color-bg-subtle:        var(--mt-gray-10);
+  --color-bg-internal:      var(--mt-green-10); /* internal-use surfaces */
+  --color-surface:          var(--mt-white);
+  --color-border:           var(--mt-gray);
+  --color-border-strong:    var(--mt-gray-60);
+
+  --color-text:             var(--mt-gray-80);
+  --color-text-muted:       var(--mt-gray-60);
+  --color-text-inverse:     var(--mt-white);
+  --color-heading:          var(--mt-blue);
+  --color-link:             var(--mt-blue);
+
+  --color-primary:          var(--mt-blue);
+  --color-primary-hover:    #003979;  /* darker MT Blue for hover only */
+  --color-accent:           var(--mt-cyan);
+  --color-success:          var(--mt-green);
+  --color-attention:        var(--mt-green); /* guide: green = attention/accents */
+
+  /* ---------- Brand gradients (decorative surfaces only) ------------ */
+  /* External communication: MT Blue -> Cyan (p.8). Use on cover/header bars. */
+  --gradient-external: linear-gradient(135deg, var(--mt-blue) 0%, var(--mt-cyan) 100%);
+  /* Internal communication: MT Green gradient (p.9). Use only on internal docs. */
+  --gradient-internal: linear-gradient(135deg, #4E8C19 0%, var(--mt-green) 100%);
+
+  /* ---------- Typography -------------------------------------------- */
+  /* Per guide p.10:
+       - "Avant Garde for MT" (AGMT) is the principal corporate typeface
+         for print/design. It is a licensed font and may not be installed
+         on user machines, so we fall back to Arial, which the guide
+         explicitly approves for correspondence, email, and PowerPoint.
+       - Asian languages use the dedicated typefaces referenced on the
+         corporate SharePoint site (not encoded here).
+       - Do not use italics, underlines, or shadows except for hyperlinks
+         in body text and mathematical symbols.
+  */
+  --font-family-base:    "Avant Garde for MT Bk", "AvantGardeForMT-Book", Arial, Helvetica, sans-serif;
+  --font-family-bold:    "Avant Garde for MT Bd", "AvantGardeForMT-Bold", Arial, Helvetica, sans-serif;
+  --font-family-correspondence: Arial, Helvetica, sans-serif; /* email / PPT / letters */
+
+  --font-weight-regular: 400;
+  --font-weight-bold:    700;
+
+  /* Type scale (prototype-level; guide does not fix web sizes) */
+  --font-size-xs:   12px;
+  --font-size-sm:   14px;
+  --font-size-base: 16px;
+  --font-size-md:   18px;
+  --font-size-lg:   22px;
+  --font-size-xl:   28px;
+  --font-size-2xl:  36px;
+
+  --line-height-tight: 1.2;
+  --line-height-base:  1.5;
+
+  /* ---------- Spacing / radius / elevation (prototype defaults) ----- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  --radius-sm: 2px;   /* keep corners conservative for corporate feel */
+  --radius-md: 4px;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.08);
+
+  /* =====================================================================
+     Prototype alias layer (NOT part of the corporate guide) — maps this
+     app's existing component variables onto the tokens above so every
+     card/button/chip in the stylesheet stays brand-correct automatically.
+     Classical = MT Green (guide: green = attention/accents), Quantum =
+     MT Blue (guide: primary corporate color), Cyan reserved for the
+     external-communication gradient + secondary quantum accents.
+     ===================================================================== */
+  --bg: var(--color-bg);
+  --bg-page: var(--color-bg);
+  --bg-alt: var(--color-bg-subtle);
+  --bg-card: var(--color-surface);
+  --bg-glass: rgba(0, 68, 148, 0.04);
+  --border: var(--color-border);
+  --border-strong: var(--color-border-strong);
+  --shadow: var(--shadow-md);
+  --shadow-sm: var(--shadow-sm);
+
+  --c-primary: var(--mt-green);
+  --c-secondary: #4E8C19;      /* darker green stop from the internal gradient */
+  --c-glow: rgba(106, 176, 35, 0.16);
+
+  --q-primary: var(--mt-blue);
+  --q-secondary: var(--mt-cyan);
+  --q-glow: rgba(0, 68, 148, 0.14);
+
+  /* Legacy component-level aliases (coin gradients, particles, etc.) —
+     kept so the rest of the stylesheet doesn't need touching, mapped
+     onto the real corporate colors above. */
+  --mt-navy: var(--mt-blue);
+  --mt-navy-light: var(--mt-cyan);
+  --mt-teal: var(--mt-green);
+  --mt-teal-dark: #4E8C19;
+
+  /* Loss/error state — not defined in the guide; a conservative red
+     chosen to stay quiet next to the corporate palette. */
+  --danger: #B3261E;
   --danger-soft: rgba(179, 38, 30, 0.1);
   --danger-border: rgba(179, 38, 30, 0.26);
 
-  --text: #0b2545;
-  --text-muted: #52627a;
-  --text-dim: #6b7a90;
+  --text: var(--color-text);
+  --text-muted: var(--color-text-muted);
+  --text-dim: var(--mt-gray-50);
 
   --nav-bg: rgba(255, 255, 255, 0.92);
-  --nav-border: #e3e8ee;
+  --nav-border: var(--color-border);
   --overlay-bg: rgba(255, 255, 255, 0.97);
 
-  --radius: 16px;
-  --radius-sm: 10px;
+  --radius: var(--radius-md);
   --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Dark toggle — the corporate guide is light-surface only, so dark mode
+   is built strictly from the guide's own black/grayscale tokens plus MT
+   Cyan (which the guide already pairs with MT Blue in the external
+   gradient) standing in for MT Blue where extra screen contrast is
+   needed on a near-black background. No colors outside the guide's
+   palette are introduced. */
 [data-theme="dark"] {
   color-scheme: dark;
-  --bg: #071624;
-  --bg-page: #071624;
-  --bg-alt: #0a1e30;
-  --bg-card: #0c2033;
-  --bg-glass: rgba(255, 255, 255, 0.04);
-  --border: rgba(255, 255, 255, 0.1);
-  --border-strong: rgba(255, 255, 255, 0.16);
-  --shadow: 0 18px 45px rgba(0, 0, 0, 0.4);
-  --shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.3);
+  --color-bg: var(--mt-black);
+  --color-bg-subtle: var(--mt-gray-80);
+  --color-surface: var(--mt-gray-80);
+  --color-border: var(--mt-gray-70);
+  --color-border-strong: var(--mt-gray-60);
+  --color-text: var(--mt-gray-10);
+  --color-text-muted: var(--mt-gray-30);
+  --color-heading: var(--mt-cyan-40);
+  --color-link: var(--mt-cyan-40);
 
-  --mt-teal: #17b3b8;
-  --mt-teal-dark: #0c8b90;
-  --mt-navy: #4d84c4;
-  --mt-navy-light: #7aa6d8;
+  --bg: var(--color-bg);
+  --bg-page: var(--color-bg);
+  --bg-alt: var(--color-bg-subtle);
+  --bg-card: var(--color-surface);
+  --bg-glass: rgba(255, 255, 255, 0.05);
+  --border: var(--color-border);
+  --border-strong: var(--color-border-strong);
+  --shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  --shadow-sm: 0 6px 16px rgba(0, 0, 0, 0.35);
 
-  --c-primary: var(--mt-teal);
-  --c-secondary: #0c8b90;
-  --c-glow: rgba(23, 179, 184, 0.22);
+  --c-primary: var(--mt-green-70);
+  --c-secondary: var(--mt-green);
+  --c-glow: rgba(151, 199, 102, 0.22);
 
-  --q-primary: var(--mt-navy);
-  --q-secondary: var(--mt-navy-light);
-  --q-glow: rgba(77, 132, 196, 0.2);
+  --q-primary: var(--mt-cyan-40);
+  --q-secondary: var(--mt-cyan);
+  --q-glow: rgba(153, 215, 241, 0.2);
 
-  --danger: #f0847a;
-  --danger-soft: rgba(240, 132, 122, 0.14);
-  --danger-border: rgba(240, 132, 122, 0.3);
+  /* Keep the legacy component aliases in sync with dark-mode accents. */
+  --mt-navy: var(--mt-cyan-40);
+  --mt-navy-light: var(--mt-cyan);
+  --mt-teal: var(--mt-green-70);
+  --mt-teal-dark: var(--mt-green);
 
-  --text: #eaf1fb;
-  --text-muted: #a3b3c9;
-  --text-dim: #8ea0b8;
+  --danger: #E39089;
+  --danger-soft: rgba(227, 144, 137, 0.16);
+  --danger-border: rgba(227, 144, 137, 0.32);
 
-  --nav-bg: rgba(7, 22, 36, 0.86);
-  --nav-border: rgba(255, 255, 255, 0.08);
-  --overlay-bg: rgba(7, 22, 36, 0.95);
+  --text: var(--color-text);
+  --text-muted: var(--color-text-muted);
+  --text-dim: var(--mt-gray-40);
+
+  --nav-bg: rgba(0, 0, 0, 0.86);
+  --nav-border: var(--mt-gray-70);
+  --overlay-bg: rgba(0, 0, 0, 0.94);
 }
 
 
@@ -99,16 +253,65 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 16px;
-  line-height: 1.6;
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
   min-height: 100vh;
   overflow-x: hidden;
 }
 
-h1, h2, h3, h4 { font-family: 'Orbitron', sans-serif; letter-spacing: 0.04em; }
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-bold);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-heading);
+  line-height: var(--line-height-tight);
+  font-style: normal;
+  text-decoration: none;
+}
 
-a { color: inherit; text-decoration: none; }
+/* Italics/underline/shadows are not permitted except hyperlinks + math.
+   Enforce by default; override only with explicit utility classes. */
+em, i { font-style: normal; }
+u    { text-decoration: none; }
+
+a {
+  color: var(--color-link);
+  text-decoration: none;
+}
+a.mt-inline-link, .prose a {
+  text-decoration: underline; /* allowed exception per guide, for body-copy links */
+}
+
+/* =====================================================================
+   Company name / trademark display rules (p.11, p.12)
+   ===================================================================== */
+.mt-company-name {
+  /* "METTLER TOLEDO is always written in upper case and without a hyphen." */
+  text-transform: uppercase;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  font-family: var(--font-family-bold);
+}
+
+.mt-trademark-symbol {
+  /* Use on first occurrence in body text only — not in titles/covers. */
+  font-size: 0.7em;
+  vertical-align: super;
+  line-height: 0;
+}
+
+/* =====================================================================
+   Brand surface utilities
+   ===================================================================== */
+.mt-surface-external { background: var(--gradient-external); color: var(--color-text-inverse); }
+.mt-surface-internal { background: var(--gradient-internal); color: var(--color-text-inverse); }
+.mt-surface-card     { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+
+.mt-brand-strip {
+  height: 4px;
+  width: 100%;
+  background: var(--gradient-external);
+}
 
 /* ---------- Particle Background ---------- */
 #particles-canvas {
@@ -131,11 +334,11 @@ a { color: inherit; text-decoration: none; }
   background: var(--nav-bg);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--nav-border);
-  box-shadow: 0 6px 20px rgba(11, 45, 77, 0.05);
+  box-shadow: 0 6px 20px rgba(0, 68, 148, 0.05);
 }
 
 .nav-logo {
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--q-primary);
@@ -145,8 +348,8 @@ a { color: inherit; text-decoration: none; }
 
 .nav-link {
   padding: 0.45rem 1.1rem;
-  border-radius: 99px;
-  font-family: 'Rajdhani', sans-serif;
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-base);
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--text-muted);
@@ -162,14 +365,14 @@ a { color: inherit; text-decoration: none; }
 
 .nav-link.active-classical {
   color: var(--c-primary);
-  background: rgba(12, 139, 144, 0.1);
-  border-color: rgba(12, 139, 144, 0.28);
+  background: rgba(106, 176, 35, 0.1);
+  border-color: rgba(106, 176, 35, 0.28);
 }
 
 .nav-link.active-quantum {
   color: var(--q-primary);
-  background: rgba(11, 45, 77, 0.08);
-  border-color: rgba(11, 45, 77, 0.24);
+  background: rgba(0, 68, 148, 0.08);
+  border-color: rgba(0, 68, 148, 0.24);
 }
 
 /* ---------- Page Wrapper ---------- */
@@ -189,7 +392,7 @@ a { color: inherit; text-decoration: none; }
 .hero-badge {
   display: inline-block;
   padding: 0.3rem 1rem;
-  border-radius: 99px;
+  border-radius: var(--radius-md);
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -200,15 +403,21 @@ a { color: inherit; text-decoration: none; }
   color: var(--text-muted);
 }
 
+.badge-home {
+  background: rgba(0, 68, 148, 0.06);
+  border: 1px solid var(--color-border);
+  color: var(--q-primary);
+}
+
 .badge-classical {
-  background: rgba(12, 139, 144, 0.1);
-  border: 1px solid rgba(12, 139, 144, 0.28);
+  background: rgba(106, 176, 35, 0.1);
+  border: 1px solid rgba(106, 176, 35, 0.28);
   color: var(--c-primary);
 }
 
 .badge-quantum {
-  background: rgba(11, 45, 77, 0.08);
-  border: 1px solid rgba(11, 45, 77, 0.24);
+  background: rgba(0, 68, 148, 0.08);
+  border: 1px solid rgba(0, 68, 148, 0.24);
   color: var(--q-primary);
 }
 
@@ -275,15 +484,15 @@ a { color: inherit; text-decoration: none; }
   transition: var(--transition);
 }
 
-.card-classical { border-color: rgba(12, 139, 144, 0.22); }
+.card-classical { border-color: rgba(106, 176, 35, 0.22); }
 .card-classical:hover {
-  border-color: rgba(12, 139, 144, 0.45);
+  border-color: rgba(106, 176, 35, 0.45);
   box-shadow: 0 10px 32px var(--c-glow);
 }
 
-.card-quantum { border-color: rgba(11, 45, 77, 0.18); }
+.card-quantum { border-color: rgba(0, 68, 148, 0.18); }
 .card-quantum:hover {
-  border-color: rgba(11, 45, 77, 0.4);
+  border-color: rgba(0, 68, 148, 0.4);
   box-shadow: 0 10px 32px var(--q-glow);
 }
 
@@ -319,22 +528,22 @@ a { color: inherit; text-decoration: none; }
 }
 
 .game-card-classical::before {
-  background: radial-gradient(ellipse at top, rgba(12, 139, 144, 0.08) 0%, transparent 60%);
+  background: radial-gradient(ellipse at top, rgba(106, 176, 35, 0.08) 0%, transparent 60%);
 }
 .game-card-quantum::before {
-  background: radial-gradient(ellipse at top, rgba(11, 45, 77, 0.08) 0%, transparent 60%);
+  background: radial-gradient(ellipse at top, rgba(0, 68, 148, 0.08) 0%, transparent 60%);
 }
 
 .game-card:hover::before { opacity: 1; }
 
 .game-card-classical:hover {
-  border-color: rgba(12, 139, 144, 0.45);
+  border-color: rgba(106, 176, 35, 0.45);
   box-shadow: 0 12px 40px var(--c-glow);
   transform: translateY(-4px);
 }
 
 .game-card-quantum:hover {
-  border-color: rgba(11, 45, 77, 0.4);
+  border-color: rgba(0, 68, 148, 0.4);
   box-shadow: 0 12px 40px var(--q-glow);
   transform: translateY(-4px);
 }
@@ -364,22 +573,22 @@ a { color: inherit; text-decoration: none; }
 .win-rate {
   display: inline-block;
   padding: 0.3rem 1rem;
-  border-radius: 99px;
+  border-radius: var(--radius-md);
   font-size: 0.85rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
 }
 
 .win-rate-classical {
-  background: rgba(12, 139, 144, 0.1);
+  background: rgba(106, 176, 35, 0.1);
   color: var(--c-primary);
-  border: 1px solid rgba(12, 139, 144, 0.28);
+  border: 1px solid rgba(106, 176, 35, 0.28);
 }
 
 .win-rate-quantum {
-  background: rgba(11, 45, 77, 0.08);
+  background: rgba(0, 68, 148, 0.08);
   color: var(--q-primary);
-  border: 1px solid rgba(11, 45, 77, 0.24);
+  border: 1px solid rgba(0, 68, 148, 0.24);
 }
 
 /* ---------- Buttons ---------- */
@@ -389,8 +598,8 @@ a { color: inherit; text-decoration: none; }
   justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1.75rem;
-  border-radius: 12px;
-  font-family: 'Rajdhani', sans-serif;
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-base);
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
@@ -421,7 +630,7 @@ a { color: inherit; text-decoration: none; }
   box-shadow: 0 6px 18px var(--q-glow);
 }
 .btn-quantum:hover {
-  background: var(--mt-navy-light);
+  background: var(--color-primary-hover);
   box-shadow: 0 8px 24px var(--q-glow);
   transform: translateY(-1px);
 }
@@ -499,8 +708,8 @@ a { color: inherit; text-decoration: none; }
   background: radial-gradient(circle at 35% 30%, #e6fbfb 0%, var(--mt-teal) 45%, var(--mt-teal-dark) 100%);
   box-shadow:
     0 0 0 4px var(--mt-teal-dark),
-    0 0 0 6px rgba(12, 139, 144, 0.35),
-    0 8px 26px rgba(12, 139, 144, 0.35),
+    0 0 0 6px rgba(106, 176, 35, 0.35),
+    0 8px 26px rgba(106, 176, 35, 0.35),
     inset 0 2px 6px rgba(255,255,255,0.5);
 }
 
@@ -508,14 +717,14 @@ a { color: inherit; text-decoration: none; }
   background: radial-gradient(circle at 35% 30%, #e6fbfb 0%, var(--mt-teal) 45%, var(--mt-teal-dark) 100%);
   box-shadow:
     0 0 0 4px var(--mt-teal-dark),
-    0 0 0 6px rgba(12, 139, 144, 0.35),
-    0 8px 26px rgba(12, 139, 144, 0.35),
+    0 0 0 6px rgba(106, 176, 35, 0.35),
+    0 8px 26px rgba(106, 176, 35, 0.35),
     inset 0 2px 6px rgba(255,255,255,0.5);
   transform: rotateY(180deg);
 }
 
 .coin-label {
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-size: 2.4rem;
   font-weight: 900;
   color: #ffffff;
@@ -524,7 +733,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .coin-sublabel {
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-size: 0.6rem;
   font-weight: 700;
   color: rgba(255,255,255,0.85);
@@ -537,8 +746,8 @@ a { color: inherit; text-decoration: none; }
   background: radial-gradient(circle at 35% 30%, #eaf1fb 0%, var(--mt-navy-light) 42%, var(--mt-navy) 100%);
   box-shadow:
     0 0 0 4px var(--mt-navy),
-    0 0 0 6px rgba(11, 45, 77, 0.35),
-    0 0 26px rgba(11, 45, 77, 0.4),
+    0 0 0 6px rgba(0, 68, 148, 0.35),
+    0 0 26px rgba(0, 68, 148, 0.4),
     inset 0 2px 6px rgba(255,255,255,0.5);
 }
 
@@ -546,8 +755,8 @@ a { color: inherit; text-decoration: none; }
   background: radial-gradient(circle at 35% 30%, #e6fbfb 0%, var(--mt-teal) 42%, var(--mt-teal-dark) 100%);
   box-shadow:
     0 0 0 4px var(--mt-teal-dark),
-    0 0 0 6px rgba(12, 139, 144, 0.35),
-    0 0 26px rgba(12, 139, 144, 0.4),
+    0 0 0 6px rgba(106, 176, 35, 0.35),
+    0 0 26px rgba(106, 176, 35, 0.4),
     inset 0 2px 6px rgba(255,255,255,0.5);
 }
 
@@ -558,12 +767,12 @@ a { color: inherit; text-decoration: none; }
 .coin-superposition .coin-face {
   background: conic-gradient(from 0deg, var(--mt-navy), var(--mt-teal), var(--mt-navy), var(--mt-teal), var(--mt-navy));
   animation: superpositionGlow 1.5s ease-in-out infinite alternate;
-  box-shadow: 0 0 0 4px var(--mt-navy), 0 0 34px rgba(11, 45, 77, 0.4), 0 0 60px rgba(12, 139, 144, 0.3);
+  box-shadow: 0 0 0 4px var(--mt-navy), 0 0 34px rgba(0, 68, 148, 0.4), 0 0 60px rgba(106, 176, 35, 0.3);
 }
 
 @keyframes superpositionGlow {
-  from { box-shadow: 0 0 0 4px var(--mt-navy), 0 0 24px rgba(11, 45, 77, 0.4), 0 0 46px rgba(12, 139, 144, 0.25); }
-  to   { box-shadow: 0 0 0 4px var(--mt-teal-dark), 0 0 24px rgba(12, 139, 144, 0.4), 0 0 46px rgba(11, 45, 77, 0.25); }
+  from { box-shadow: 0 0 0 4px var(--mt-navy), 0 0 24px rgba(0, 68, 148, 0.4), 0 0 46px rgba(106, 176, 35, 0.25); }
+  to   { box-shadow: 0 0 0 4px var(--mt-teal-dark), 0 0 24px rgba(106, 176, 35, 0.4), 0 0 46px rgba(0, 68, 148, 0.25); }
 }
 
 /* ---------- Game Board Layout ---------- */
@@ -604,9 +813,9 @@ a { color: inherit; text-decoration: none; }
 }
 
 .step-dot.active-c { background: var(--c-primary); box-shadow: 0 0 8px var(--c-primary); }
-.step-dot.done-c   { background: rgba(12, 139, 144, 0.4); }
+.step-dot.done-c   { background: rgba(106, 176, 35, 0.4); }
 .step-dot.active-q { background: var(--q-primary); box-shadow: 0 0 8px var(--q-primary); }
-.step-dot.done-q   { background: rgba(11, 45, 77, 0.4); }
+.step-dot.done-q   { background: rgba(0, 68, 148, 0.4); }
 
 .step-line {
   flex: 1;
@@ -626,7 +835,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .stage-title {
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-size: 0.9rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -653,8 +862,8 @@ a { color: inherit; text-decoration: none; }
 .choice-btn {
   min-width: 130px;
   padding: 0.85rem 1.5rem;
-  border-radius: 12px;
-  font-family: 'Orbitron', sans-serif;
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-bold);
   font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
@@ -666,22 +875,22 @@ a { color: inherit; text-decoration: none; }
 }
 
 .choice-btn-classical {
-  border-color: rgba(12, 139, 144, 0.4);
+  border-color: rgba(106, 176, 35, 0.4);
   color: var(--c-primary);
 }
 .choice-btn-classical:hover {
-  background: rgba(12, 139, 144, 0.1);
+  background: rgba(106, 176, 35, 0.1);
   border-color: var(--c-primary);
   box-shadow: 0 0 18px var(--c-glow);
   transform: translateY(-2px);
 }
 
 .choice-btn-quantum {
-  border-color: rgba(11, 45, 77, 0.35);
+  border-color: rgba(0, 68, 148, 0.35);
   color: var(--q-primary);
 }
 .choice-btn-quantum:hover {
-  background: rgba(11, 45, 77, 0.08);
+  background: rgba(0, 68, 148, 0.08);
   border-color: var(--q-primary);
   box-shadow: 0 0 18px var(--q-glow);
   transform: translateY(-2px);
@@ -704,14 +913,14 @@ a { color: inherit; text-decoration: none; }
 }
 
 .status-info-c {
-  background: rgba(12, 139, 144, 0.08);
-  border: 1px solid rgba(12, 139, 144, 0.22);
+  background: rgba(106, 176, 35, 0.08);
+  border: 1px solid rgba(106, 176, 35, 0.22);
   color: var(--c-secondary);
 }
 
 .status-info-q {
-  background: rgba(11, 45, 77, 0.07);
-  border: 1px solid rgba(11, 45, 77, 0.2);
+  background: rgba(0, 68, 148, 0.07);
+  border: 1px solid rgba(0, 68, 148, 0.2);
   color: var(--q-primary);
 }
 
@@ -740,7 +949,7 @@ a { color: inherit; text-decoration: none; }
 .result-overlay.show { display: flex; }
 
 .result-emoji {
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-size: 1.6rem;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -784,7 +993,7 @@ a { color: inherit; text-decoration: none; }
 
 .move-chip {
   padding: 0.4rem 1rem;
-  border-radius: 99px;
+  border-radius: var(--radius-md);
   font-size: 0.85rem;
   font-weight: 600;
   border: 1px solid;
@@ -794,16 +1003,16 @@ a { color: inherit; text-decoration: none; }
 }
 
 .move-chip-profile {
-  background: rgba(12, 139, 144, 0.1);
+  background: rgba(106, 176, 35, 0.1);
   color: var(--c-primary);
-  border-color: rgba(12, 139, 144, 0.26);
+  border-color: rgba(106, 176, 35, 0.26);
 }
 
-.move-chip-flip-c { background: rgba(12, 139, 144, 0.12); color: var(--c-primary); border-color: rgba(12, 139, 144, 0.28); }
+.move-chip-flip-c { background: rgba(106, 176, 35, 0.12); color: var(--c-primary); border-color: rgba(106, 176, 35, 0.28); }
 .move-chip-keep-c { background: var(--bg-glass); color: var(--text-dim); border-color: var(--border); }
-.move-chip-flip-q { background: rgba(11, 45, 77, 0.1); color: var(--q-primary); border-color: rgba(11, 45, 77, 0.26); }
-.move-chip-keep-q { background: rgba(28, 72, 112, 0.08); color: var(--q-secondary); border-color: rgba(28, 72, 112, 0.24); }
-.move-chip-h      { background: rgba(11, 45, 77, 0.1); color: var(--q-primary); border-color: rgba(11, 45, 77, 0.26); font-family: 'Share Tech Mono', monospace; }
+.move-chip-flip-q { background: rgba(0, 68, 148, 0.1); color: var(--q-primary); border-color: rgba(0, 68, 148, 0.26); }
+.move-chip-keep-q { background: rgba(0, 156, 221, 0.1); color: var(--q-secondary); border-color: rgba(0, 156, 221, 0.26); }
+.move-chip-h      { background: rgba(0, 68, 148, 0.1); color: var(--q-primary); border-color: rgba(0, 68, 148, 0.26); font-family: 'Share Tech Mono', monospace; }
 
 .result-buttons {
   display: flex;
@@ -823,7 +1032,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .score-panel-title {
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -846,7 +1055,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .score-value {
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-size: 1.3rem;
   font-weight: 700;
   color: var(--text);
@@ -855,14 +1064,14 @@ a { color: inherit; text-decoration: none; }
 .score-bar-wrap {
   height: 6px;
   background: var(--bg-glass);
-  border-radius: 99px;
+  border-radius: var(--radius-sm);
   margin-bottom: 1rem;
   overflow: hidden;
 }
 
 .score-bar {
   height: 100%;
-  border-radius: 99px;
+  border-radius: var(--radius-sm);
   transition: width 0.5s ease;
 }
 
@@ -882,7 +1091,7 @@ a { color: inherit; text-decoration: none; }
 
 .history-panel::-webkit-scrollbar { width: 4px; }
 .history-panel::-webkit-scrollbar-track { background: transparent; }
-.history-panel::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 99px; }
+.history-panel::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: var(--radius-sm); }
 
 .history-item {
   display: flex;
@@ -903,7 +1112,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .history-round {
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-size: 0.75rem;
   color: var(--text-muted);
   min-width: 28px;
@@ -911,15 +1120,15 @@ a { color: inherit; text-decoration: none; }
 
 .history-player {
   font-size: 0.72rem;
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 0.28rem 0.55rem;
-  border-radius: 99px;
-  background: rgba(11, 45, 77, 0.07);
+  border-radius: var(--radius-md);
+  background: rgba(0, 68, 148, 0.07);
   color: var(--q-primary);
-  border: 1px solid rgba(11, 45, 77, 0.18);
+  border: 1px solid rgba(0, 68, 148, 0.18);
 }
 
 .history-outcome {
@@ -936,14 +1145,14 @@ a { color: inherit; text-decoration: none; }
 /* ---------- Quantum Circuit ---------- */
 .circuit-panel {
   background: var(--bg-card);
-  border: 1px solid rgba(11, 45, 77, 0.18);
+  border: 1px solid rgba(0, 68, 148, 0.18);
   border-radius: var(--radius);
   padding: 1.5rem;
   box-shadow: var(--shadow-sm);
 }
 
 .circuit-title {
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -962,14 +1171,14 @@ a { color: inherit; text-decoration: none; }
 /* ---------- State Vector Panel ---------- */
 .state-panel {
   background: var(--bg-card);
-  border: 1px solid rgba(12, 139, 144, 0.18);
+  border: 1px solid rgba(106, 176, 35, 0.18);
   border-radius: var(--radius);
   padding: 1.5rem;
   box-shadow: var(--shadow-sm);
 }
 
 .state-title {
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -1014,14 +1223,14 @@ a { color: inherit; text-decoration: none; }
   flex: 1;
   height: 12px;
   background: var(--bg-glass);
-  border-radius: 99px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   border: 1px solid var(--border);
 }
 
 .prob-fill {
   height: 100%;
-  border-radius: 99px;
+  border-radius: var(--radius-sm);
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -1044,7 +1253,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .section-title {
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-size: 1.5rem;
   font-weight: 700;
   text-align: center;
@@ -1078,7 +1287,7 @@ a { color: inherit; text-decoration: none; }
 .info-card { text-align: center; }
 .info-icon {
   display: block;
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.14em;
@@ -1090,7 +1299,7 @@ a { color: inherit; text-decoration: none; }
 .info-card p  { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
 
 .how-num {
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-size: 2rem;
   font-weight: 900;
   margin-bottom: 0.5rem;
@@ -1120,7 +1329,7 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.85rem;
 }
 
-.footer a { color: var(--q-primary); transition: var(--transition); }
+.footer a { color: var(--q-primary); text-decoration: underline; transition: var(--transition); }
 .footer a:hover { color: var(--c-primary); }
 
 /* ---------- Utility ---------- */
@@ -1191,8 +1400,8 @@ a { color: inherit; text-decoration: none; }
 
 /* ---------- Quantum-page specific bits ---------- */
 .rules-card {
-  background: rgba(12, 139, 144, 0.05);
-  border: 1px solid rgba(12, 139, 144, 0.18);
+  background: rgba(106, 176, 35, 0.05);
+  border: 1px solid rgba(106, 176, 35, 0.18);
   border-radius: var(--radius-sm);
   padding: 1rem 1.25rem;
   margin-bottom: 1rem;
@@ -1208,7 +1417,7 @@ a { color: inherit; text-decoration: none; }
 }
 .rules-card .rule-row:last-child { margin-bottom: 0; }
 .rule-num {
-  background: rgba(12, 139, 144, 0.14);
+  background: rgba(106, 176, 35, 0.14);
   color: var(--c-primary);
   border-radius: 50%;
   width: 20px; height: 20px;
@@ -1221,7 +1430,7 @@ a { color: inherit; text-decoration: none; }
   margin-top: 1px;
 }
 .coin-state-label {
-  font-family: 'Orbitron', monospace;
+  font-family: var(--font-family-bold);
   font-size: 0.8rem;
   letter-spacing: 0.1em;
   color: var(--text-muted);
@@ -1231,8 +1440,8 @@ a { color: inherit; text-decoration: none; }
 }
 
 .q-rules-card {
-  background: rgba(11, 45, 77, 0.05);
-  border: 1px solid rgba(11, 45, 77, 0.18);
+  background: rgba(0, 68, 148, 0.05);
+  border: 1px solid rgba(0, 68, 148, 0.18);
   border-radius: var(--radius-sm);
   padding: 1rem 1.25rem;
   margin-bottom: 1rem;
@@ -1248,7 +1457,7 @@ a { color: inherit; text-decoration: none; }
 }
 .q-rules-card .rule-row:last-child { margin-bottom: 0; }
 .rule-num-q {
-  background: rgba(11, 45, 77, 0.14);
+  background: rgba(0, 68, 148, 0.14);
   color: var(--q-primary);
   border-radius: 50%;
   width: 20px; height: 20px;
@@ -1288,12 +1497,12 @@ a { color: inherit; text-decoration: none; }
 .q-phase-badge {
   display: inline-block;
   padding: 0.25rem 0.85rem;
-  border-radius: 99px;
+  border-radius: var(--radius-md);
   font-family: 'Share Tech Mono', monospace;
   font-size: 0.78rem;
   letter-spacing: 0.05em;
-  background: rgba(11, 45, 77, 0.08);
-  border: 1px solid rgba(11, 45, 77, 0.22);
+  background: rgba(0, 68, 148, 0.08);
+  border: 1px solid rgba(0, 68, 148, 0.22);
   color: var(--q-primary);
   margin-bottom: 0.6rem;
 }
@@ -1407,7 +1616,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .community-eyebrow {
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.16em;
@@ -1417,7 +1626,7 @@ a { color: inherit; text-decoration: none; }
 
 .community-card h2,
 .community-card h3 {
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-size: 1rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1440,11 +1649,11 @@ a { color: inherit; text-decoration: none; }
   flex: 1;
   min-width: 220px;
   border: 1px solid var(--border-strong);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   background: #ffffff;
   padding: 0.95rem 1rem;
   color: var(--text);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: var(--font-family-base);
   font-size: 1rem;
 }
 
@@ -1467,9 +1676,9 @@ a { color: inherit; text-decoration: none; }
 
 .player-chip {
   padding: 0.4rem 0.85rem;
-  border-radius: 99px;
-  background: rgba(11, 45, 77, 0.08);
-  border: 1px solid rgba(11, 45, 77, 0.22);
+  border-radius: var(--radius-md);
+  background: rgba(0, 68, 148, 0.08);
+  border: 1px solid rgba(0, 68, 148, 0.22);
   color: var(--q-primary);
   font-weight: 600;
 }
@@ -1506,7 +1715,7 @@ a { color: inherit; text-decoration: none; }
   gap: 0.75rem;
   align-items: center;
   padding: 0.85rem;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--border);
   background: var(--bg-alt);
 }
@@ -1519,7 +1728,7 @@ a { color: inherit; text-decoration: none; }
   place-items: center;
   background: var(--mt-navy);
   color: #ffffff;
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-size: 0.82rem;
   font-weight: 700;
 }
@@ -1531,7 +1740,7 @@ a { color: inherit; text-decoration: none; }
 
 .leaderboard-stats {
   text-align: right;
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-weight: 700;
   color: var(--text);
 }
@@ -1544,17 +1753,17 @@ a { color: inherit; text-decoration: none; }
 
 .leaderboard-bar {
   height: 4px;
-  border-radius: 99px;
+  border-radius: var(--radius-sm);
   background: linear-gradient(90deg, var(--q-primary), var(--c-primary));
   margin-top: 0.5rem;
 }
 
 .activity-mode {
   padding: 0.34rem 0.65rem;
-  border-radius: 99px;
-  background: rgba(11, 45, 77, 0.08);
+  border-radius: var(--radius-md);
+  background: rgba(0, 68, 148, 0.08);
   color: var(--q-primary);
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -1577,7 +1786,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .activity-result {
-  font-family: 'Orbitron', sans-serif;
+  font-family: var(--font-family-bold);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -1592,7 +1801,7 @@ a { color: inherit; text-decoration: none; }
   text-align: center;
   color: var(--text-muted);
   border: 1px dashed var(--border-strong);
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   background: var(--bg-alt);
 }
 
@@ -1638,6 +1847,21 @@ a { color: inherit; text-decoration: none; }
   .nav-link { padding: 0.4rem 0.75rem; font-size: 0.85rem; }
   .stage-card { padding: 1.5rem 1rem; }
   .result-title { font-size: 2rem; }
+}
+
+/* =====================================================================
+   PDF export overrides
+   The exported assessment PDF must match the on-screen brand styling.
+   ===================================================================== */
+@media print {
+  :root {
+    --color-bg: #FFFFFF;
+  }
+  body { background: #FFFFFF; }
+  a    { color: var(--mt-blue); }
+  /* The cover/header band of the exported PDF should use the
+     external blue-to-cyan gradient per page 8 of the guide. */
+  .mt-brand-strip { background: var(--gradient-external); }
 }
 
 

@@ -100,7 +100,7 @@ function getCurrentPlayerName() {
 
 /* ---- Init ---- */
 document.addEventListener('DOMContentLoaded', () => {
-  initParticles('particles-canvas', { color1: '#0b2d4d', color2: '#0c8b90', color3: '#1c4870' });
+  initParticles('particles-canvas', { color1: '#004494', color2: '#009CDD', color3: '#6AB023' });
   updateQScoreDisplay();
   updateStateDisplay();
   drawCircuit('idle');
@@ -253,7 +253,7 @@ function showQResult(winner, coin, userMove, playerName) {
   `;
 
   qResultOverlay.classList.add('show');
-  if (!isQWin) launchConfetti(['#0c8b90', '#076468', '#0b2d4d']);
+  if (!isQWin) launchConfetti(['#009CDD', '#004494', '#6AB023']);
 }
 
 /* ---- Circuit Drawing ---- */
@@ -281,7 +281,7 @@ function drawCircuit(phase) {
   const x4 = W - pad;       // measure
 
   // Wire
-  ctx.strokeStyle = phase === 'idle' ? '#c3ccd8' : '#0b2d4d';
+  ctx.strokeStyle = phase === 'idle' ? '#DADADA' : '#004494';
   ctx.lineWidth = 2;
   ctx.setLineDash([]);
   ctx.beginPath();
@@ -291,23 +291,23 @@ function drawCircuit(phase) {
 
   // Init label |0⟩
   ctx.font = '13px "Share Tech Mono", monospace';
-  ctx.fillStyle = '#6b7a90';
+  ctx.fillStyle = '#666666';
   ctx.textAlign = 'center';
   ctx.fillText('|0⟩', x0, y + 4);
 
   // Helper: draw gate box
-  function drawGate(x, label, active, color = '#0b2d4d') {
+  function drawGate(x, label, active, color = '#004494') {
     const gx = x - gateW / 2, gy = y - gateH / 2;
     const alpha = active ? 1 : 0.3;
     ctx.globalAlpha = alpha;
-    ctx.fillStyle = active ? color + '1a' : '#eef2f6';
+    ctx.fillStyle = active ? color + '1a' : '#E6E6E6';
     ctx.strokeStyle = color;
     ctx.lineWidth = active ? 2 : 1;
     ctx.beginPath();
     ctx.roundRect(gx, gy, gateW, gateH, 5);
     ctx.fill();
     ctx.stroke();
-    ctx.fillStyle = active ? color : '#8a97a8';
+    ctx.fillStyle = active ? color : '#999999';
     ctx.font = `bold 14px "Share Tech Mono", monospace`;
     ctx.textAlign = 'center';
     ctx.fillText(label, x, y + 5);
@@ -316,24 +316,24 @@ function drawCircuit(phase) {
 
   // H gate 1
   const h1Active = ['after-h1', 'after-user', 'complete'].includes(phase);
-  drawGate(x1, 'H', h1Active, '#0b2d4d');
+  drawGate(x1, 'H', h1Active, '#004494');
 
   // User gate
   const userGateLabel = phase === 'idle' || phase === 'start' || phase === 'after-h1'
     ? 'U?'
     : (userChoice === 'flip' ? 'X' : 'I');
   const userActive = ['after-user', 'complete'].includes(phase);
-  const userColor   = userChoice === 'flip' ? '#0c8b90' : '#1c4870';
-  drawGate(x2, userGateLabel, userActive, userActive ? userColor : '#8a97a8');
+  const userColor   = userChoice === 'flip' ? '#6AB023' : '#009CDD';
+  drawGate(x2, userGateLabel, userActive, userActive ? userColor : '#999999');
 
   // H gate 2
   const h2Active = phase === 'complete';
-  drawGate(x3, 'H', h2Active, '#0b2d4d');
+  drawGate(x3, 'H', h2Active, '#004494');
 
   // Measure symbol
   ctx.globalAlpha = phase === 'complete' ? 1 : 0.3;
-  ctx.strokeStyle = '#0c8b90';
-  ctx.fillStyle   = 'rgba(12,139,144,0.1)';
+  ctx.strokeStyle = '#009CDD';
+  ctx.fillStyle   = 'rgba(0,156,221,0.1)';
   ctx.lineWidth   = 2;
   const mx = x4 - 14, mw = 28, mh = 28, my = y - mh / 2;
   ctx.beginPath();
@@ -343,7 +343,7 @@ function drawCircuit(phase) {
   // meter arc
   ctx.beginPath();
   ctx.arc(x4, y + 4, 8, Math.PI, 0);
-  ctx.strokeStyle = '#0c8b90';
+  ctx.strokeStyle = '#009CDD';
   ctx.lineWidth = 1.5;
   ctx.stroke();
   ctx.beginPath();

@@ -93,9 +93,9 @@ function initParticles(canvasId, opts = {}) {
 
   const {
     count = 120,
-    color1 = '#0f2747',
-    color2 = '#0b9ea0',
-    color3 = '#5b7bbd',
+    color1 = '#004494',
+    color2 = '#009CDD',
+    color3 = '#6AB023',
     speed = 0.24,
   } = opts;
 
@@ -193,7 +193,7 @@ function randomChoice(arr) {
 }
 
 /* ---- Confetti burst ---- */
-function launchConfetti(colors = ['#0f2747', '#0b9ea0', '#5b7bbd', '#d7e4f4', '#7aa6d8']) {
+function launchConfetti(colors = ['#004494', '#009CDD', '#6AB023', '#DADADA', '#33B0E3']) {
   const canvas = document.createElement('canvas');
   canvas.style.cssText = 'position:fixed;inset:0;z-index:9999;pointer-events:none;';
   document.body.appendChild(canvas);

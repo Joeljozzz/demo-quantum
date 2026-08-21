@@ -7,51 +7,11 @@
   <meta name="description" content="Play the classical version of Meyer's Penny Game. You vs a random computer." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
-  <style>
-    .rules-card {
-      background: rgba(11,158,160,0.05);
-      border: 1px solid rgba(11,158,160,0.16);
-      border-radius: var(--radius-sm);
-      padding: 1rem 1.25rem;
-      margin-bottom: 1rem;
-    }
-    .rules-card .rule-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.6rem;
-      font-size: 0.88rem;
-      color: var(--text-dim);
-      margin-bottom: 0.4rem;
-      line-height: 1.5;
-    }
-    .rules-card .rule-row:last-child { margin-bottom: 0; }
-    .rule-num {
-      background: rgba(11,158,160,0.12);
-      color: var(--c-primary);
-      border-radius: 50%;
-      width: 20px; height: 20px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-      font-weight: 700;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-    .coin-state-label {
-      font-family: 'Orbitron', monospace;
-      font-size: 0.8rem;
-      letter-spacing: 0.1em;
-      color: var(--text-muted);
-      text-align: center;
-      margin-top: 0.75rem;
-      text-transform: uppercase;
-    }
-  </style>
 </head>
 <body>
+  <div class="mt-brand-strip"></div>
   <canvas id="particles-canvas"></canvas>
 
   <!-- Nav -->
@@ -170,7 +130,7 @@
 
         <!-- Quick rules (collapsible feel) -->
         <div class="rules-card">
-          <div style="font-family:'Orbitron',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.12em;color:var(--c-primary);margin-bottom:0.6rem;text-transform:uppercase;">How to Win</div>
+          <div style="font-family:var(--font-family-bold);font-size:0.75rem;font-weight:700;letter-spacing:0.12em;color:var(--c-primary);margin-bottom:0.6rem;text-transform:uppercase;">How to Win</div>
           <div class="rule-row"><span class="rule-num">1</span> Coin starts <strong>Heads</strong>. You make a secret move.</div>
           <div class="rule-row"><span class="rule-num">2</span> The computer makes a random move (you don't see it).</div>
           <div class="rule-row"><span class="rule-num">3</span> You make a second secret move.</div>
