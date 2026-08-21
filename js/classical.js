@@ -40,6 +40,10 @@ const historyList  = document.getElementById('history-list');
 const stepsEl      = document.querySelectorAll('.step-dot');
 const btnReset     = document.getElementById('btn-reset');
 
+function getCurrentPlayerName() {
+  return window.PennyGameLive?.getActivePlayerName?.() || 'Guest Player';
+}
+
 // ---- Init ----
 document.addEventListener('DOMContentLoaded', () => {
   initParticles('particles-canvas');
@@ -74,7 +78,7 @@ async function handleChoice(choice) {
   if (gamePhase === 'user1') {
     userMove1 = choice;
     applyCoinMove(choice);
-    setStatus('🔒 Move locked! Computer is deciding...', 'status-locked');
+    setStatus('Move locked — computer is deciding...', 'status-locked');
     updateSteps(2);
     await sleep(1400);
     doComputerMove();
@@ -82,7 +86,7 @@ async function handleChoice(choice) {
   } else if (gamePhase === 'user2') {
     userMove2 = choice;
     applyCoinMove(choice);
-    setStatus('🔒 Move locked! Revealing the coin...', 'status-locked');
+    setStatus('Move locked — revealing the coin...', 'status-locked');
     updateSteps(4);
     await sleep(900);
     doReveal();
@@ -107,7 +111,7 @@ async function doComputerMove() {
   await sleep(1200);
 
   applyCoinMove(compMove);
-  setStatus('💻 Computer has moved.', 'status-info-c');
+  setStatus('Computer has moved.', 'status-info-c');
   await sleep(700);
 
   // user2 phase
@@ -127,6 +131,7 @@ async function doReveal() {
   gamePhase = 'reveal';
 
   const winner = coinState === 'H' ? 'player' : 'computer';
+  const playerName = getCurrentPlayerName();
 
   // Flip coin with animation
   await flipCoinEl(coinEl, coinState, 1200);
@@ -140,28 +145,38 @@ async function doReveal() {
   updateScoreDisplay();
 
   // Add to history
-  addHistoryItem(roundNum, winner, userMove1, compMove, userMove2, coinState);
+  addHistoryItem(roundNum, winner, userMove1, compMove, userMove2, coinState, playerName);
+
+  // Update live community board
+  window.PennyGameLive?.recordRound?.({
+    mode: 'classical',
+    winner,
+    playerName,
+    resultCoin: coinState,
+    summary: `${playerName} ${winner === 'player' ? 'won' : 'lost'} a classical round.`,
+  });
 
   // Show result overlay
-  showResult(winner, coinState);
+  showResult(winner, coinState, playerName);
 }
 
-function showResult(winner, coin) {
+function showResult(winner, coin, playerName) {
   const isWin = winner === 'player';
-  resultEmoji.textContent = isWin ? '🎉' : '💻';
+  resultEmoji.textContent = isWin ? 'You' : 'CPU';
   resultTitle.textContent = isWin ? 'You Win!' : 'Computer Wins!';
   resultTitle.style.color = isWin ? 'var(--c-primary)' : '#f87171';
   resultSub.textContent   = coin === 'H'
-    ? 'The coin landed HEADS — you win this round!'
-    : 'The coin landed TAILS — computer wins this round!';
+    ? `${playerName}, the coin landed HEADS — you win this round!`
+    : `${playerName}, the coin landed TAILS — computer wins this round!`;
 
   // Move chips
   resultMoves.innerHTML = `
-    <span class="move-chip move-chip-${userMove1 === 'flip' ? 'flip' : 'keep'}-c">You: ${userMove1 === 'flip' ? '🔄 Flip' : '✋ Keep'}</span>
-    <span class="move-chip move-chip-keep-c">Computer: ${compMove === 'flip' ? '🔄 Flip' : '✋ Keep'}</span>
-    <span class="move-chip move-chip-${userMove2 === 'flip' ? 'flip' : 'keep'}-c">You: ${userMove2 === 'flip' ? '🔄 Flip' : '✋ Keep'}</span>
+    <span class="move-chip move-chip-profile">Player: ${escapeHtml(playerName)}</span>
+    <span class="move-chip move-chip-${userMove1 === 'flip' ? 'flip' : 'keep'}-c">You: ${userMove1 === 'flip' ? 'Flip' : 'Keep'}</span>
+    <span class="move-chip move-chip-keep-c">Computer: ${compMove === 'flip' ? 'Flip' : 'Keep'}</span>
+    <span class="move-chip move-chip-${userMove2 === 'flip' ? 'flip' : 'keep'}-c">You: ${userMove2 === 'flip' ? 'Flip' : 'Keep'}</span>
     <span class="move-chip move-chip-keep-c" style="background:rgba(${coin==='H'?'6,182,212':'248,113,113'},0.12);color:${coin==='H'?'var(--q-primary)':'#f87171'};border-color:rgba(${coin==='H'?'6,182,212':'248,113,113'},0.3)">
-      Result: ${coin === 'H' ? '👑 HEADS' : '🪙 TAILS'}
+      Result: ${coin === 'H' ? 'HEADS' : 'TAILS'}
     </span>
   `;
 
@@ -204,14 +219,15 @@ function updateScoreDisplay() {
   scoreBarComp.style.width = (scores.computer / total * 100) + '%';
 }
 
-function addHistoryItem(round, winner, u1, comp, u2, coin) {
+function addHistoryItem(round, winner, u1, comp, u2, coin, playerName) {
   if (!historyList) return;
   const isWin = winner === 'player';
   const item = document.createElement('div');
   item.className = 'history-item';
   item.innerHTML = `
     <span class="history-round">#${round}</span>
-    <span class="history-outcome">${coin === 'H' ? '👑' : '🪙'}</span>
+    <span class="history-player">${escapeHtml(playerName)}</span>
+    <span class="history-outcome">${coin === 'H' ? 'H' : 'T'}</span>
     <span class="history-text">
       U:${u1[0].toUpperCase()} · C:${comp[0].toUpperCase()} · U:${u2[0].toUpperCase()}
     </span>

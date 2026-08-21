@@ -11,8 +11,8 @@
   <link rel="stylesheet" href="css/styles.css" />
   <style>
     .rules-card {
-      background: rgba(245,158,11,0.05);
-      border: 1px solid rgba(245,158,11,0.15);
+      background: rgba(11,158,160,0.05);
+      border: 1px solid rgba(11,158,160,0.16);
       border-radius: var(--radius-sm);
       padding: 1rem 1.25rem;
       margin-bottom: 1rem;
@@ -28,7 +28,7 @@
     }
     .rules-card .rule-row:last-child { margin-bottom: 0; }
     .rule-num {
-      background: rgba(245,158,11,0.15);
+      background: rgba(11,158,160,0.12);
       color: var(--c-primary);
       border-radius: 50%;
       width: 20px; height: 20px;
@@ -56,11 +56,12 @@
 
   <!-- Nav -->
   <nav class="nav">
-    <a href="index.html" class="nav-logo">⚛ The Penny Game</a>
+    <a href="index.html" class="nav-logo">The Penny Game</a>
     <div class="nav-links">
       <a href="index.html"     class="nav-link">Home</a>
       <a href="classical.html" class="nav-link active-classical">Classical</a>
       <a href="quantum.html"   class="nav-link">Quantum</a>
+      <button id="theme-toggle" class="btn btn-outline" aria-label="Toggle theme">Theme</button>
     </div>
   </nav>
 
@@ -84,6 +85,45 @@
         <div class="step-dot" title="Your second move"></div>
         <div class="step-line"></div>
         <div class="step-dot" title="Reveal"></div>
+      </div>
+    </section>
+
+    <!-- Live registration + board -->
+    <section class="community-console">
+      <div class="community-card registration-card">
+        <div class="community-eyebrow">Live player registry</div>
+        <h2>Enter your name</h2>
+        <p class="community-copy">
+          Register once and your name will stay on the live board while you play the classical and quantum games.
+        </p>
+        <form class="player-form" data-player-form>
+          <input class="player-input" id="player-name-input" data-player-input type="text" maxlength="28" placeholder="e.g. Jordan Lee" aria-label="Enter your name" />
+          <button class="btn btn-classical" type="submit">Join board</button>
+        </form>
+        <div class="player-meta">
+          <span class="player-chip" data-player-chip>Guest Player</span>
+          <span class="player-status" data-player-status>Register your name to appear on the live board</span>
+        </div>
+      </div>
+
+      <div class="community-card">
+        <div class="community-header">
+          <h3>Live leaderboard</h3>
+          <span>Synced across open tabs</span>
+        </div>
+        <div class="leaderboard-list" data-leaderboard>
+          <div class="empty-state">Loading leaderboard…</div>
+        </div>
+      </div>
+
+      <div class="community-card">
+        <div class="community-header">
+          <h3>Recent activity</h3>
+          <span>Hourly cleanup enabled</span>
+        </div>
+        <div class="activity-feed" data-activity-feed>
+          <div class="empty-state">Live activity will appear here once people start playing.</div>
+        </div>
       </div>
     </section>
 
@@ -120,10 +160,10 @@
 
           <div id="choice-wrap" class="choice-buttons">
             <button class="choice-btn choice-btn-classical" id="btn-flip">
-              🔄 Flip
+              Flip
             </button>
             <button class="choice-btn choice-btn-classical" id="btn-keep">
-              ✋ Keep
+              Keep
             </button>
           </div>
         </div>
@@ -145,25 +185,25 @@
         <div class="score-panel">
           <div class="score-panel-title">Scoreboard</div>
           <div class="score-row">
-            <span class="score-label">👤 You</span>
+            <span class="score-label">You</span>
             <span class="score-value text-c" id="score-you">0</span>
           </div>
           <div class="score-bar-wrap">
             <div class="score-bar score-bar-classical" id="score-bar-you" style="width:0%"></div>
           </div>
           <div class="score-row">
-            <span class="score-label">💻 Computer</span>
+            <span class="score-label">Computer</span>
             <span class="score-value" style="color:#f87171" id="score-comp">0</span>
           </div>
           <div class="score-bar-wrap">
-            <div class="score-bar" style="background:linear-gradient(90deg,#b91c1c,#f87171)" id="score-bar-comp" style="width:0%"></div>
+            <div class="score-bar" id="score-bar-comp" style="width:0%;background:linear-gradient(90deg,#b91c1c,#f87171)"></div>
           </div>
           <div class="divider"></div>
           <div class="score-row">
             <span class="score-label" style="font-size:0.85rem">Rounds Played</span>
             <span class="score-value" style="font-size:1rem;color:var(--text-dim)" id="score-rounds">0</span>
           </div>
-          <button class="btn btn-ghost" id="btn-reset" style="width:100%;margin-top:0.5rem;font-size:0.8rem;">↺ Reset Stats</button>
+          <button class="btn btn-ghost" id="btn-reset" style="width:100%;margin-top:0.5rem;font-size:0.8rem;">Reset Stats</button>
         </div>
 
         <!-- History -->
@@ -186,14 +226,14 @@
 
   <!-- Result Overlay -->
   <div class="result-overlay" id="result-overlay">
-    <div id="result-emoji" class="result-emoji">🎉</div>
+    <div id="result-emoji" class="result-emoji">Result</div>
     <h2 id="result-title" class="result-title">You Win!</h2>
     <p id="result-sub" class="result-subtitle">The coin landed Heads!</p>
     <div id="result-moves" class="result-moves"></div>
     <div class="result-buttons">
       <button class="btn btn-classical btn-lg" id="btn-play-again">Play Again</button>
-      <a href="quantum.html"><button class="btn btn-outline">Try Quantum ⚛️</button></a>
-      <button class="btn btn-ghost" id="btn-close-result">✕ Close</button>
+      <a href="quantum.html"><button class="btn btn-outline">Try Quantum</button></a>
+      <button class="btn btn-ghost" id="btn-close-result">Close</button>
     </div>
   </div>
 

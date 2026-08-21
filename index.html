@@ -27,13 +27,13 @@
       50%       { transform: translateY(-12px); }
     }
     .hero-coin-wrap .coin-face {
-      background: radial-gradient(circle at 35% 30%, #fde68a 0%, #f59e0b 40%, #b45309 100%);
-      box-shadow: 0 0 0 3px #b45309, 0 0 0 5px #f59e0b, 0 0 40px rgba(245,158,11,0.5),
-                  0 0 0 40px rgba(245,158,11,0.05);
+      background: radial-gradient(circle at 35% 30%, #eaf7f7 0%, #0b9ea0 42%, #0f2747 100%);
+      box-shadow: 0 0 0 3px rgba(15,39,71,0.9), 0 0 0 5px rgba(11,158,160,0.8), 0 0 36px rgba(11,158,160,0.22),
+                  0 0 0 40px rgba(11,158,160,0.04);
     }
     .hero-coin-wrap .coin-back {
-      background: radial-gradient(circle at 35% 30%, #e0f7ff 0%, #06b6d4 40%, #0e4a6b 100%);
-      box-shadow: 0 0 0 3px #0891b2, 0 0 0 5px #06b6d4, 0 0 40px rgba(6,182,212,0.5);
+      background: radial-gradient(circle at 35% 30%, #eef4ff 0%, #004b87 42%, #0f2747 100%);
+      box-shadow: 0 0 0 3px rgba(15,39,71,0.9), 0 0 0 5px rgba(0,75,135,0.8), 0 0 36px rgba(0,75,135,0.22);
       transform: rotateY(180deg);
     }
     .hero-coin-wrap .coin-label { font-size: 2rem; }
@@ -100,8 +100,8 @@
       margin: 1.5rem 0;
     }
     .formula-step {
-      background: rgba(0,0,0,0.3);
-      border: 1px solid var(--border);
+      background: rgba(15,39,71,0.04);
+      border: 1px solid rgba(15,39,71,0.1);
       border-radius: var(--radius-sm);
       padding: 0.6rem 1.2rem;
       font-family: 'Share Tech Mono', monospace;
@@ -119,11 +119,12 @@
 
   <!-- Nav -->
   <nav class="nav">
-    <span class="nav-logo">⚛ The Penny Game</span>
+    <span class="nav-logo">The Penny Game</span>
     <div class="nav-links">
       <a href="index.html"     class="nav-link active-classical">Home</a>
       <a href="classical.html" class="nav-link">Classical</a>
       <a href="quantum.html"   class="nav-link">Quantum</a>
+      <button id="theme-toggle" class="btn btn-outline" aria-label="Toggle theme">Theme</button>
     </div>
   </nav>
 
@@ -140,7 +141,7 @@
               <span class="coin-sublabel">Heads</span>
             </div>
             <div class="coin-back">
-              <span class="coin-label" style="color:#e0f7ff;text-shadow:0 0 10px #06b6d4">⚛</span>
+              <span class="coin-label" style="color:#e0f7ff;text-shadow:0 0 10px #06b6d4">Q</span>
               <span class="coin-sublabel" style="color:#7dd3fc">Quantum</span>
             </div>
           </div>
@@ -151,14 +152,54 @@
         <span class="grad-home">The Penny Game</span>
       </h1>
       <p class="hero-subtitle">
-        A demonstration of <strong>quantum supremacy</strong>. Play the classical coin game — then watch a quantum computer win every time using Hadamard superposition.
+        A clean demonstration of <strong>Meyer's Quantum Penny Game</strong>. Register your name, play the classical or quantum version, and watch the live results board update in real time.
       </p>
+    </section>
+
+    <!-- Live registration + board -->
+    <section class="community-console">
+      <div class="community-card registration-card">
+        <div class="community-eyebrow">Live player registry</div>
+        <h2>Enter your name</h2>
+        <p class="community-copy">
+          Register once and your name will stay on the live board while you move between the home page,
+          classical game, and quantum game.
+        </p>
+        <form class="player-form" data-player-form>
+          <input class="player-input" id="player-name-input" data-player-input type="text" maxlength="28" placeholder="e.g. Jordan Lee" aria-label="Enter your name" />
+          <button class="btn btn-classical" type="submit">Join board</button>
+        </form>
+        <div class="player-meta">
+          <span class="player-chip" data-player-chip>Guest Player</span>
+          <span class="player-status" data-player-status>Register your name to appear on the live board</span>
+        </div>
+      </div>
+
+      <div class="community-card">
+        <div class="community-header">
+          <h3>Live leaderboard</h3>
+          <span>Synced across open tabs</span>
+        </div>
+        <div class="leaderboard-list" data-leaderboard>
+          <div class="empty-state">Loading leaderboard…</div>
+        </div>
+      </div>
+
+      <div class="community-card">
+        <div class="community-header">
+          <h3>Recent activity</h3>
+          <span>Hourly cleanup enabled</span>
+        </div>
+        <div class="activity-feed" data-activity-feed>
+          <div class="empty-state">Live activity will appear here once people start playing.</div>
+        </div>
+      </div>
     </section>
 
     <!-- Game Cards -->
     <div class="game-cards">
       <a href="classical.html" class="game-card game-card-classical">
-        <span class="game-card-icon" style="color: var(--c-primary)">🪙</span>
+        <span class="game-card-icon" style="color: var(--c-primary)">Coin</span>
         <h2><span class="grad-classical">Classical Game</span></h2>
         <p>You vs. a classical computer. The computer picks randomly. Strategy vs. chance — who wins?</p>
         <span class="win-rate win-rate-classical">~50% win rate</span>
@@ -167,7 +208,7 @@
       </a>
 
       <a href="quantum.html" class="game-card game-card-quantum">
-        <span class="game-card-icon" style="color: var(--q-primary)">⚛️</span>
+        <span class="game-card-icon" style="color: var(--q-primary)">Quantum</span>
         <h2><span class="grad-quantum">Quantum Game</span></h2>
         <p>You vs. a quantum computer using Hadamard gates. Can <em>any</em> classical strategy beat superposition?</p>
         <span class="win-rate win-rate-quantum">~100% quantum win rate</span>
@@ -183,22 +224,22 @@
       <h2 class="section-title">How the Game Works</h2>
       <div class="info-grid">
         <div class="info-card">
-          <span class="info-icon">🎯</span>
+          <span class="info-icon">Goal</span>
           <h3>Starting State</h3>
           <p>The coin begins <strong>Heads</strong>. If it ends Heads, <em>you</em> win. Tails, the computer wins.</p>
         </div>
         <div class="info-card">
-          <span class="info-icon">🤫</span>
+          <span class="info-icon">Secret</span>
           <h3>Secret Moves</h3>
           <p>You make <strong>two secret moves</strong>: flip or keep. The computer makes one move in between.</p>
         </div>
         <div class="info-card">
-          <span class="info-icon">🎲</span>
+          <span class="info-icon">Random</span>
           <h3>Classical Computer</h3>
           <p>The classical computer picks randomly — giving you a genuine 50/50 chance to win.</p>
         </div>
         <div class="info-card">
-          <span class="info-icon">⚛️</span>
+          <span class="info-icon">Quantum</span>
           <h3>Quantum Computer</h3>
           <p>The quantum computer uses <strong>Hadamard gates</strong> — no matter what you do, it collapses to Heads and wins.</p>
         </div>

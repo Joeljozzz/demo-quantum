@@ -1,7 +1,7 @@
 # ⚛ The Penny Game — Classical vs Quantum
 
-A beautiful interactive web app demonstrating **Meyer's Quantum Penny Game** (1999).
-Play the classical version, then watch a quantum computer win every time using Hadamard gates.
+A polished interactive web app demonstrating **Meyer's Quantum Penny Game** (1999) with a clean, light-first Mettler Toledo-inspired UI.
+Register your name, play the classical or quantum version, and watch the live board update in real time across open tabs.
 
 ## 🎮 Pages
 
@@ -10,6 +10,18 @@ Play the classical version, then watch a quantum computer win every time using H
 | `index.html` | Landing page — intro & explanation |
 | `classical.html` | Classical game: You vs random computer (~50% each) |
 | `quantum.html` | Quantum game: You vs Hadamard strategy (~100% quantum win) |
+
+## ✨ What’s New
+
+- Clean navy/teal light theme with a more professional, Claude-like layout
+- Name registration flow on every page
+- Live leaderboard and recent activity feed
+- Round tracking per player and per game mode
+- Hourly cleanup of stale activity items in browser storage
+- Theme toggle still available for dark mode
+
+> Note: the live board syncs instantly across open tabs/windows in the same browser using `localStorage` + `BroadcastChannel`.
+> A true multi-user/global leaderboard would need a backend service.
 
 ## 🧠 The Game Rules
 
@@ -57,9 +69,9 @@ game_demo/
 ├── classical.html    # Classical penny game
 ├── quantum.html      # Quantum penny game
 ├── css/
-│   └── styles.css    # All styles (dark space theme)
+│   └── styles.css    # Shared styles (light-first navy/teal theme)
 ├── js/
-│   ├── common.js     # Shared: particles, storage, coin utils
+│   ├── common.js     # Shared: particles, storage, live board, theme, cleanup
 │   ├── classical.js  # Classical game logic
 │   └── quantum.js    # Quantum state + game logic
 ├── package.json

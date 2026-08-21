@@ -12,8 +12,8 @@
   <style>
     /* Quantum-specific extras */
     .q-rules-card {
-      background: rgba(6,182,212,0.05);
-      border: 1px solid rgba(6,182,212,0.15);
+      background: rgba(0,75,135,0.05);
+      border: 1px solid rgba(0,75,135,0.16);
       border-radius: var(--radius-sm);
       padding: 1rem 1.25rem;
       margin-bottom: 1rem;
@@ -29,7 +29,7 @@
     }
     .q-rules-card .rule-row:last-child { margin-bottom: 0; }
     .rule-num-q {
-      background: rgba(6,182,212,0.15);
+      background: rgba(0,75,135,0.12);
       color: var(--q-primary);
       border-radius: 50%;
       width: 20px; height: 20px;
@@ -86,18 +86,19 @@
 
   <!-- Nav -->
   <nav class="nav">
-    <a href="index.html" class="nav-logo">⚛ The Penny Game</a>
+    <a href="index.html" class="nav-logo">The Penny Game</a>
     <div class="nav-links">
       <a href="index.html"     class="nav-link">Home</a>
       <a href="classical.html" class="nav-link">Classical</a>
       <a href="quantum.html"   class="nav-link active-quantum">Quantum</a>
+      <button id="theme-toggle" class="btn btn-outline" aria-label="Toggle theme">Theme</button>
     </div>
   </nav>
 
   <div class="page">
     <!-- Hero -->
     <section class="hero" style="padding-bottom: 2rem;">
-      <div class="hero-badge badge-quantum">⚛ Quantum Computer</div>
+      <div class="hero-badge badge-quantum">Quantum Computer</div>
       <h1 class="hero-title"><span class="grad-quantum">Quantum Penny</span></h1>
       <p class="hero-subtitle">
         The quantum computer uses <strong>Hadamard superposition</strong> to guarantee a win.<br>
@@ -116,6 +117,45 @@
         <div class="step-dot" title="H gate again"></div>
         <div class="step-line"></div>
         <div class="step-dot" title="Measure"></div>
+      </div>
+    </section>
+
+    <!-- Live registration + board -->
+    <section class="community-console">
+      <div class="community-card registration-card">
+        <div class="community-eyebrow">Live player registry</div>
+        <h2>Enter your name</h2>
+        <p class="community-copy">
+          Register once and your name will stay on the live board while you move between the classical and quantum games.
+        </p>
+        <form class="player-form" data-player-form>
+          <input class="player-input" id="player-name-input" data-player-input type="text" maxlength="28" placeholder="e.g. Jordan Lee" aria-label="Enter your name" />
+          <button class="btn btn-quantum" type="submit">Join board</button>
+        </form>
+        <div class="player-meta">
+          <span class="player-chip" data-player-chip>Guest Player</span>
+          <span class="player-status" data-player-status>Register your name to appear on the live board</span>
+        </div>
+      </div>
+
+      <div class="community-card">
+        <div class="community-header">
+          <h3>Live leaderboard</h3>
+          <span>Synced across open tabs</span>
+        </div>
+        <div class="leaderboard-list" data-leaderboard>
+          <div class="empty-state">Loading leaderboard…</div>
+        </div>
+      </div>
+
+      <div class="community-card">
+        <div class="community-header">
+          <h3>Recent activity</h3>
+          <span>Hourly cleanup enabled</span>
+        </div>
+        <div class="activity-feed" data-activity-feed>
+          <div class="empty-state">Live activity will appear here once people start playing.</div>
+        </div>
       </div>
     </section>
 
@@ -153,10 +193,10 @@
 
           <div id="q-choice-wrap" class="choice-buttons hidden">
             <button class="choice-btn choice-btn-quantum" id="q-btn-flip">
-              🔄 Flip (X gate)
+              Flip (X gate)
             </button>
             <button class="choice-btn choice-btn-quantum" id="q-btn-keep">
-              ✋ Keep (Identity)
+              Keep (Identity)
             </button>
           </div>
 
@@ -200,7 +240,7 @@
 
         <!-- Circuit Panel -->
         <div class="circuit-panel">
-          <div class="circuit-title">⚡ Quantum Circuit</div>
+          <div class="circuit-title">Quantum Circuit</div>
           <canvas id="circuit-canvas" style="width:100%;height:110px;"></canvas>
           <div style="font-size:0.78rem;color:var(--text-muted);margin-top:0.6rem;text-align:center;font-family:'Share Tech Mono',monospace;">
             Q: H → U: ? → Q: H → Measure
@@ -211,14 +251,14 @@
         <div class="score-panel">
           <div class="score-panel-title">Scoreboard</div>
           <div class="score-row">
-            <span class="score-label">⚛️ Quantum CPU</span>
+            <span class="score-label">Quantum CPU</span>
             <span class="score-value text-q" id="q-score-comp">0</span>
           </div>
           <div class="score-bar-wrap">
             <div class="score-bar score-bar-quantum" id="q-bar-comp" style="width:0%"></div>
           </div>
           <div class="score-row">
-            <span class="score-label">👤 You</span>
+            <span class="score-label">You</span>
             <span class="score-value text-c" id="q-score-player">0</span>
           </div>
           <div class="score-bar-wrap">
@@ -229,7 +269,7 @@
             <span class="score-label" style="font-size:0.85rem">Rounds Played</span>
             <span class="score-value" style="font-size:1rem;color:var(--text-dim)" id="q-score-rounds">0</span>
           </div>
-          <button class="btn btn-ghost" id="q-btn-reset" style="width:100%;margin-top:0.5rem;font-size:0.8rem;">↺ Reset Stats</button>
+          <button class="btn btn-ghost" id="q-btn-reset" style="width:100%;margin-top:0.5rem;font-size:0.8rem;">Reset Stats</button>
         </div>
 
         <!-- History -->
@@ -254,14 +294,14 @@
 
   <!-- Result Overlay -->
   <div class="result-overlay" id="q-result-overlay">
-    <div id="q-result-emoji" class="result-emoji">⚛️</div>
+    <div id="q-result-emoji" class="result-emoji">Q</div>
     <h2 id="q-result-title" class="result-title">Quantum Wins!</h2>
     <p id="q-result-sub" class="result-subtitle">The Hadamard strategy collapsed perfectly to |0⟩.</p>
     <div id="q-result-moves" class="result-moves"></div>
     <div class="result-buttons">
       <button class="btn btn-quantum btn-lg" id="q-btn-again">Try Again</button>
-      <a href="classical.html"><button class="btn btn-outline">Classical Game 🪙</button></a>
-      <button class="btn btn-ghost" id="q-btn-close">✕ Close</button>
+      <a href="classical.html"><button class="btn btn-outline">Classical Game</button></a>
+      <button class="btn btn-ghost" id="q-btn-close">Close</button>
     </div>
   </div>
 

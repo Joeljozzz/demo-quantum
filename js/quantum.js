@@ -94,6 +94,10 @@ const probPctH       = document.getElementById('prob-pct-heads');
 const probPctT       = document.getElementById('prob-pct-tails');
 const circuitCanvas  = document.getElementById('circuit-canvas');
 
+function getCurrentPlayerName() {
+  return window.PennyGameLive?.getActivePlayerName?.() || 'Guest Player';
+}
+
 /* ---- Init ---- */
 document.addEventListener('DOMContentLoaded', () => {
   initParticles('particles-canvas', { color1: '#06b6d4', color2: '#8b5cf6', color3: '#0ea5e9' });
@@ -143,7 +147,7 @@ async function startQRound() {
   qCoinEl.classList.add('coin-superposition');
   updateStateDisplay();
   drawCircuit('after-h1');
-  setQStatus('⚛️ Superposition! |ψ⟩ = (|0⟩ + |1⟩)/√2', 'status-info-q');
+  setQStatus('Superposition! |ψ⟩ = (|0⟩ + |1⟩)/√2', 'status-info-q');
   await sleep(1200);
 
   // Step 3 — User's turn
@@ -162,6 +166,7 @@ async function handleQChoice(choice) {
   if (qPhase !== 'user') return;
   qPhase = 'processing';
   userChoice = choice;
+  const playerName = getCurrentPlayerName();
   qBtnFlip.disabled = true;
   qBtnKeep.disabled = true;
   qChoiceWrap.classList.add('hidden');
@@ -175,7 +180,7 @@ async function handleQChoice(choice) {
   updateStateDisplay();
   drawCircuit('after-user');
 
-  setQStatus(`🔒 You chose to ${choice === 'flip' ? '🔄 Flip' : '✋ Keep'}. Quantum computer responds...`, 'status-locked');
+  setQStatus(`You chose to ${choice === 'flip' ? 'Flip' : 'Keep'}. Quantum computer responds...`, 'status-locked');
   await sleep(1000);
 
   // Step 4 — Quantum applies H again
@@ -191,16 +196,16 @@ async function handleQChoice(choice) {
 
   // Remove superposition effect
   qCoinEl.classList.remove('coin-superposition');
-  setQStatus('⚛️ Superposition collapsed! Result determined...', 'status-info-q');
+  setQStatus('Superposition collapsed! Result determined...', 'status-info-q');
   await sleep(900);
 
   // Reveal
   const result = qState.measure();  // Should always be H (~100%)
   qRound++;
-  await doQReveal(result, choice);
+  await doQReveal(result, choice, playerName);
 }
 
-async function doQReveal(result, userMove) {
+async function doQReveal(result, userMove, playerName) {
   // The quantum strategy means result is always H
   const winner = result === 'H' ? 'computer' : 'player';  // Heads = Q computer wins in quantum game
 
@@ -213,27 +218,37 @@ async function doQReveal(result, userMove) {
   Storage.saveScores(Q_SCORE_KEY, qScores);
   updateQScoreDisplay();
 
-  addQHistoryItem(qRound, winner, userMove, result);
-  showQResult(winner, result, userMove);
+  addQHistoryItem(qRound, winner, userMove, result, playerName);
+
+  window.PennyGameLive?.recordRound?.({
+    mode: 'quantum',
+    winner,
+    playerName,
+    resultCoin: result,
+    summary: `${playerName} ${winner === 'player' ? 'beat' : 'lost to'} the quantum strategy.`,
+  });
+
+  showQResult(winner, result, userMove, playerName);
 }
 
-function showQResult(winner, coin, userMove) {
+function showQResult(winner, coin, userMove, playerName) {
   const isQWin = winner === 'computer';
-  qResultEmoji.textContent = isQWin ? '⚛️' : '😱';
+  qResultEmoji.textContent = isQWin ? 'Quantum' : 'Result';
   qResultTitle.textContent = isQWin ? 'Quantum Wins!' : 'You Beat Quantum!';
   qResultTitle.style.color = isQWin ? 'var(--q-primary)' : 'var(--c-primary)';
   qResultSub.textContent   = isQWin
-    ? `Heads! The Hadamard strategy collapses perfectly to |0⟩ every time.`
-    : `Incredible! The quantum collapse didn't favour the computer this round.`;
+    ? `${playerName}, heads! The Hadamard strategy collapses perfectly to |0⟩ every time.`
+    : `${playerName}, incredible! The quantum collapse didn't favour the computer this round.`;
 
   qResultMoves.innerHTML = `
+    <span class="move-chip move-chip-profile">Player: ${escapeHtml(playerName)}</span>
     <span class="move-chip move-chip-h">Q: H</span>
     <span class="move-chip move-chip-${userMove === 'flip' ? 'flip' : 'keep'}-q">
-      You: ${userMove === 'flip' ? '🔄 Flip (X)' : '✋ Keep (I)'}
+      You: ${userMove === 'flip' ? 'Flip (X)' : 'Keep (I)'}
     </span>
     <span class="move-chip move-chip-h">Q: H</span>
     <span class="move-chip move-chip-h" style="background:rgba(${coin==='H'?'6,182,212':'139,92,246'},0.12);color:${coin==='H'?'var(--q-primary)':'var(--q-secondary)'};border-color:rgba(${coin==='H'?'6,182,212':'139,92,246'},0.3)">
-      ${coin === 'H' ? '⚛️ |0⟩ HEADS' : '🌀 |1⟩ TAILS'}
+      ${coin === 'H' ? '|0⟩ HEADS' : '|1⟩ TAILS'}
     </span>
   `;
 
@@ -361,14 +376,15 @@ function updateQScoreDisplay() {
   if (qBarPlayer)   qBarPlayer.style.width = (qScores.player  / total * 100) + '%';
 }
 
-function addQHistoryItem(round, winner, uMove, coin) {
+function addQHistoryItem(round, winner, uMove, coin, playerName) {
   if (!qHistoryList) return;
   const isQWin = winner === 'computer';
   const item = document.createElement('div');
   item.className = 'history-item';
   item.innerHTML = `
     <span class="history-round">#${round}</span>
-    <span class="history-outcome">${coin === 'H' ? '⚛️' : '🌀'}</span>
+    <span class="history-player">${escapeHtml(playerName)}</span>
+    <span class="history-outcome">${coin === 'H' ? 'H' : 'T'}</span>
     <span class="history-text">H → ${uMove[0].toUpperCase()} → H</span>
     <span class="history-winner ${isQWin ? 'history-winner-comp' : 'history-winner-you'}">
       ${isQWin ? 'Q wins' : 'You!'}
