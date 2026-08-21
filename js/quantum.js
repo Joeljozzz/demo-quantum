@@ -100,7 +100,7 @@ function getCurrentPlayerName() {
 
 /* ---- Init ---- */
 document.addEventListener('DOMContentLoaded', () => {
-  initParticles('particles-canvas', { color1: '#06b6d4', color2: '#8b5cf6', color3: '#0ea5e9' });
+  initParticles('particles-canvas', { color1: '#0b2d4d', color2: '#0c8b90', color3: '#1c4870' });
   updateQScoreDisplay();
   updateStateDisplay();
   drawCircuit('idle');
@@ -247,13 +247,13 @@ function showQResult(winner, coin, userMove, playerName) {
       You: ${userMove === 'flip' ? 'Flip (X)' : 'Keep (I)'}
     </span>
     <span class="move-chip move-chip-h">Q: H</span>
-    <span class="move-chip move-chip-h" style="background:rgba(${coin==='H'?'6,182,212':'139,92,246'},0.12);color:${coin==='H'?'var(--q-primary)':'var(--q-secondary)'};border-color:rgba(${coin==='H'?'6,182,212':'139,92,246'},0.3)">
+    <span class="move-chip move-chip-h" style="background:${coin==='H'?'rgba(11,45,77,0.1)':'rgba(12,139,144,0.1)'};color:${coin==='H'?'var(--q-primary)':'var(--c-primary)'};border-color:${coin==='H'?'rgba(11,45,77,0.26)':'rgba(12,139,144,0.26)'}">
       ${coin === 'H' ? '|0⟩ HEADS' : '|1⟩ TAILS'}
     </span>
   `;
 
   qResultOverlay.classList.add('show');
-  if (!isQWin) launchConfetti(['#f59e0b', '#fcd34d', '#f97316']);
+  if (!isQWin) launchConfetti(['#0c8b90', '#076468', '#0b2d4d']);
 }
 
 /* ---- Circuit Drawing ---- */
@@ -281,7 +281,7 @@ function drawCircuit(phase) {
   const x4 = W - pad;       // measure
 
   // Wire
-  ctx.strokeStyle = phase === 'idle' ? '#1e293b' : '#06b6d4';
+  ctx.strokeStyle = phase === 'idle' ? '#c3ccd8' : '#0b2d4d';
   ctx.lineWidth = 2;
   ctx.setLineDash([]);
   ctx.beginPath();
@@ -291,23 +291,23 @@ function drawCircuit(phase) {
 
   // Init label |0⟩
   ctx.font = '13px "Share Tech Mono", monospace';
-  ctx.fillStyle = '#94a3b8';
+  ctx.fillStyle = '#6b7a90';
   ctx.textAlign = 'center';
   ctx.fillText('|0⟩', x0, y + 4);
 
   // Helper: draw gate box
-  function drawGate(x, label, active, color = '#06b6d4') {
+  function drawGate(x, label, active, color = '#0b2d4d') {
     const gx = x - gateW / 2, gy = y - gateH / 2;
-    const alpha = active ? 1 : 0.22;
+    const alpha = active ? 1 : 0.3;
     ctx.globalAlpha = alpha;
-    ctx.fillStyle = active ? color + '22' : '#1e293b';
+    ctx.fillStyle = active ? color + '1a' : '#eef2f6';
     ctx.strokeStyle = color;
     ctx.lineWidth = active ? 2 : 1;
     ctx.beginPath();
     ctx.roundRect(gx, gy, gateW, gateH, 5);
     ctx.fill();
     ctx.stroke();
-    ctx.fillStyle = active ? color : '#475569';
+    ctx.fillStyle = active ? color : '#8a97a8';
     ctx.font = `bold 14px "Share Tech Mono", monospace`;
     ctx.textAlign = 'center';
     ctx.fillText(label, x, y + 5);
@@ -316,24 +316,24 @@ function drawCircuit(phase) {
 
   // H gate 1
   const h1Active = ['after-h1', 'after-user', 'complete'].includes(phase);
-  drawGate(x1, 'H', h1Active, '#06b6d4');
+  drawGate(x1, 'H', h1Active, '#0b2d4d');
 
   // User gate
   const userGateLabel = phase === 'idle' || phase === 'start' || phase === 'after-h1'
     ? 'U?'
     : (userChoice === 'flip' ? 'X' : 'I');
   const userActive = ['after-user', 'complete'].includes(phase);
-  const userColor   = userChoice === 'flip' ? '#f59e0b' : '#8b5cf6';
-  drawGate(x2, userGateLabel, userActive, userActive ? userColor : '#475569');
+  const userColor   = userChoice === 'flip' ? '#0c8b90' : '#1c4870';
+  drawGate(x2, userGateLabel, userActive, userActive ? userColor : '#8a97a8');
 
   // H gate 2
   const h2Active = phase === 'complete';
-  drawGate(x3, 'H', h2Active, '#06b6d4');
+  drawGate(x3, 'H', h2Active, '#0b2d4d');
 
   // Measure symbol
-  ctx.globalAlpha = phase === 'complete' ? 1 : 0.25;
-  ctx.strokeStyle = '#f59e0b';
-  ctx.fillStyle   = 'rgba(245,158,11,0.1)';
+  ctx.globalAlpha = phase === 'complete' ? 1 : 0.3;
+  ctx.strokeStyle = '#0c8b90';
+  ctx.fillStyle   = 'rgba(12,139,144,0.1)';
   ctx.lineWidth   = 2;
   const mx = x4 - 14, mw = 28, mh = 28, my = y - mh / 2;
   ctx.beginPath();
@@ -343,7 +343,7 @@ function drawCircuit(phase) {
   // meter arc
   ctx.beginPath();
   ctx.arc(x4, y + 4, 8, Math.PI, 0);
-  ctx.strokeStyle = '#f59e0b';
+  ctx.strokeStyle = '#0c8b90';
   ctx.lineWidth = 1.5;
   ctx.stroke();
   ctx.beginPath();

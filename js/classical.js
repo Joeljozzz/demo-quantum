@@ -164,7 +164,7 @@ function showResult(winner, coin, playerName) {
   const isWin = winner === 'player';
   resultEmoji.textContent = isWin ? 'You' : 'CPU';
   resultTitle.textContent = isWin ? 'You Win!' : 'Computer Wins!';
-  resultTitle.style.color = isWin ? 'var(--c-primary)' : '#f87171';
+  resultTitle.style.color = isWin ? 'var(--c-primary)' : 'var(--danger)';
   resultSub.textContent   = coin === 'H'
     ? `${playerName}, the coin landed HEADS — you win this round!`
     : `${playerName}, the coin landed TAILS — computer wins this round!`;
@@ -175,7 +175,7 @@ function showResult(winner, coin, playerName) {
     <span class="move-chip move-chip-${userMove1 === 'flip' ? 'flip' : 'keep'}-c">You: ${userMove1 === 'flip' ? 'Flip' : 'Keep'}</span>
     <span class="move-chip move-chip-keep-c">Computer: ${compMove === 'flip' ? 'Flip' : 'Keep'}</span>
     <span class="move-chip move-chip-${userMove2 === 'flip' ? 'flip' : 'keep'}-c">You: ${userMove2 === 'flip' ? 'Flip' : 'Keep'}</span>
-    <span class="move-chip move-chip-keep-c" style="background:rgba(${coin==='H'?'6,182,212':'248,113,113'},0.12);color:${coin==='H'?'var(--q-primary)':'#f87171'};border-color:rgba(${coin==='H'?'6,182,212':'248,113,113'},0.3)">
+    <span class="move-chip" style="background:${coin==='H'?'rgba(11,45,77,0.1)':'var(--danger-soft)'};color:${coin==='H'?'var(--q-primary)':'var(--danger)'};border-color:${coin==='H'?'rgba(11,45,77,0.26)':'var(--danger-border)'}">
       Result: ${coin === 'H' ? 'HEADS' : 'TAILS'}
     </span>
   `;

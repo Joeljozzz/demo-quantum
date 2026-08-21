@@ -73,7 +73,7 @@
       <p class="hero-subtitle">
         Make two secret moves around the computer's random choice.<br>
         <strong style="color:var(--c-primary)">Heads = You Win</strong> ·
-        <strong style="color:#f87171">Tails = Computer Wins</strong>
+        <strong style="color:var(--danger)">Tails = Computer Wins</strong>
       </p>
 
       <!-- Step indicators -->
@@ -174,7 +174,7 @@
           <div class="rule-row"><span class="rule-num">1</span> Coin starts <strong>Heads</strong>. You make a secret move.</div>
           <div class="rule-row"><span class="rule-num">2</span> The computer makes a random move (you don't see it).</div>
           <div class="rule-row"><span class="rule-num">3</span> You make a second secret move.</div>
-          <div class="rule-row"><span class="rule-num">4</span> Reveal — <strong style="color:var(--c-primary)">Heads = You win</strong> · <strong style="color:#f87171">Tails = Computer wins</strong></div>
+          <div class="rule-row"><span class="rule-num">4</span> Reveal — <strong style="color:var(--c-primary)">Heads = You win</strong> · <strong style="color:var(--danger)">Tails = Computer wins</strong></div>
         </div>
       </div>
 
@@ -193,10 +193,10 @@
           </div>
           <div class="score-row">
             <span class="score-label">Computer</span>
-            <span class="score-value" style="color:#f87171" id="score-comp">0</span>
+            <span class="score-value" style="color:var(--danger)" id="score-comp">0</span>
           </div>
           <div class="score-bar-wrap">
-            <div class="score-bar" id="score-bar-comp" style="width:0%;background:linear-gradient(90deg,#b91c1c,#f87171)"></div>
+            <div class="score-bar" id="score-bar-comp" style="width:0%;background:var(--danger)"></div>
           </div>
           <div class="divider"></div>
           <div class="score-row">
