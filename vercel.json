@@ -1,20 +1,6 @@
 {
   "version": 2,
   "name": "penny-game",
-  "builds": [
-    { "src": "api/**/*.js", "use": "@vercel/node" },
-    {
-      "src": "**/*",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
-    }
-  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -24,9 +10,6 @@
         { "key": "X-XSS-Protection",       "value": "1; mode=block" }
       ]
     }
-  ],
-  "crons": [
-    { "path": "/api/cleanup", "schedule": "0 * * * *" }
   ]
 }
 

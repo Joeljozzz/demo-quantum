@@ -49,48 +49,8 @@
         <span class="grad-home">The Penny Game</span>
       </h1>
       <p class="hero-subtitle">
-        A clean demonstration of <strong>Meyer's Quantum Penny Game</strong>. Register your name, play the classical or quantum version, and watch the live results board update in real time.
+        A clean demonstration of <strong>Meyer's Quantum Penny Game</strong> — play the classical version against a random computer, or the quantum version against an always-winning Hadamard strategy.
       </p>
-    </section>
-
-    <!-- Live registration + board -->
-    <section class="community-console">
-      <div class="community-card registration-card">
-        <div class="community-eyebrow">Live player registry</div>
-        <h2>Enter your name</h2>
-        <p class="community-copy">
-          Register once and your name will stay on the live board while you move between the home page,
-          classical game, and quantum game.
-        </p>
-        <form class="player-form" data-player-form>
-          <input class="player-input" id="player-name-input" data-player-input type="text" maxlength="28" placeholder="e.g. Jordan Lee" aria-label="Enter your name" />
-          <button class="btn btn-classical" type="submit">Join board</button>
-        </form>
-        <div class="player-meta">
-          <span class="player-chip" data-player-chip>Guest Player</span>
-          <span class="player-status" data-player-status>Register your name to appear on the live board</span>
-        </div>
-      </div>
-
-      <div class="community-card">
-        <div class="community-header">
-          <h3>Live leaderboard</h3>
-          <span data-sync-status>Checking live sync…</span>
-        </div>
-        <div class="leaderboard-list" data-leaderboard>
-          <div class="empty-state">Loading leaderboard…</div>
-        </div>
-      </div>
-
-      <div class="community-card">
-        <div class="community-header">
-          <h3>Recent activity</h3>
-          <span>Hourly cleanup enabled</span>
-        </div>
-        <div class="activity-feed" data-activity-feed>
-          <div class="empty-state">Live activity will appear here once people start playing.</div>
-        </div>
-      </div>
     </section>
 
     <!-- Game Cards -->
@@ -147,8 +107,8 @@
     <div class="quantum-explainer container">
       <h2><span class="grad-quantum">The Quantum Advantage</span></h2>
       <p>
-        In <strong>Meyer's Quantum Penny Game</strong> (1999), a quantum player applies a Hadamard gate twice —
-        placing the coin in superposition, then collapsing it perfectly. No classical strategy can counter this.
+        A quantum player applies a Hadamard gate twice — placing the coin in superposition, then
+        collapsing it perfectly. No classical strategy can counter this.
       </p>
 
       <div class="formula-row">
@@ -160,20 +120,13 @@
         <span class="formula-arrow">→</span>
         <span class="formula-step" style="color:var(--q-secondary)">H|±⟩ = |0⟩ ✓</span>
       </div>
-
-      <p style="font-size:0.9rem;">
-        Whether you flip (apply X gate) or keep (identity I), applying H a second time always collapses the state back to <strong>|0⟩ = Heads</strong>. The quantum computer wins every time.
-      </p>
     </div>
 
     <!-- Footer -->
     <footer class="footer">
-      <p>Built to demonstrate <strong>Meyer's Quantum Penny Game</strong> ·
+      <p>
         <a href="classical.html">Play Classical</a> ·
         <a href="quantum.html">Play Quantum</a>
-      </p>
-      <p style="margin-top:0.5rem;">
-        Styled in the spirit of <span class="mt-company-name">METTLER TOLEDO<sup class="mt-trademark-symbol">®</sup></span> corporate design.
       </p>
     </footer>
   </div>

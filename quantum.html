@@ -50,44 +50,6 @@
       </div>
     </section>
 
-    <!-- Live registration + board -->
-    <section class="community-console">
-      <div class="community-card registration-card">
-        <div class="community-eyebrow">Live player registry</div>
-        <h2>Enter your name</h2>
-        <p class="community-copy">
-          Register once and your name will stay on the live board while you move between the classical and quantum games.
-        </p>
-        <form class="player-form" data-player-form>
-          <input class="player-input" id="player-name-input" data-player-input type="text" maxlength="28" placeholder="e.g. Jordan Lee" aria-label="Enter your name" />
-          <button class="btn btn-quantum" type="submit">Join board</button>
-        </form>
-        <div class="player-meta">
-          <span class="player-chip" data-player-chip>Guest Player</span>
-          <span class="player-status" data-player-status>Register your name to appear on the live board</span>
-        </div>
-      </div>
-
-      <div class="community-card">
-        <div class="community-header">
-          <h3>Live leaderboard</h3>
-          <span data-sync-status>Checking live sync…</span>
-        </div>
-        <div class="leaderboard-list" data-leaderboard>
-          <div class="empty-state">Loading leaderboard…</div>
-        </div>
-      </div>
-
-      <div class="community-card">
-        <div class="community-header">
-          <h3>Recent activity</h3>
-          <span>Hourly cleanup enabled</span>
-        </div>
-        <div class="activity-feed" data-activity-feed>
-          <div class="empty-state">Live activity will appear here once people start playing.</div>
-        </div>
-      </div>
-    </section>
 
     <!-- Game Board -->
     <div class="game-board">
@@ -213,8 +175,7 @@
         <!-- Info box -->
         <div class="info-box">
           <strong style="color:var(--q-primary)">Why does quantum always win?</strong><br><br>
-          H·H = I (identity). So <span class="quantum-formula">H(I)|0⟩ = |0⟩</span> and <span class="quantum-formula">H(X)|0⟩ = H|1⟩ = |0⟩·</span>… wait — <span class="quantum-formula">H|1⟩ = (|0⟩−|1⟩)/√2</span>? <br><br>
-          Actually in Meyer's game Q plays 1st & 3rd, and <em>any</em> classical move in position 2 commutes past the H·H to give |0⟩. This is the quantum advantage!
+          Applying the Hadamard gate twice (H·H) always returns to the original state — so no matter what you do in between, the second H collapses the coin back to <span class="quantum-formula">|0⟩ = Heads</span>.
           <br><br>
           Try the <a href="classical.html" style="color:var(--c-primary)">Classical game →</a> to compare.
         </div>

@@ -8,7 +8,6 @@
   },
   "scripts": {
     "dev": "npx serve . -p 3000",
-    "dev:api": "npx vercel dev",
     "build": "echo 'Static site — no build step needed'",
     "start": "npx serve . -p 3000"
   },

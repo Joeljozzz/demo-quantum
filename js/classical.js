@@ -40,9 +40,6 @@ const historyList  = document.getElementById('history-list');
 const stepsEl      = document.querySelectorAll('.step-dot');
 const btnReset     = document.getElementById('btn-reset');
 
-function getCurrentPlayerName() {
-  return window.PennyGameLive?.getActivePlayerName?.() || 'Guest Player';
-}
 
 // ---- Init ----
 document.addEventListener('DOMContentLoaded', () => {
@@ -131,7 +128,6 @@ async function doReveal() {
   gamePhase = 'reveal';
 
   const winner = coinState === 'H' ? 'player' : 'computer';
-  const playerName = getCurrentPlayerName();
 
   // Flip coin with animation
   await flipCoinEl(coinEl, coinState, 1200);
@@ -145,33 +141,23 @@ async function doReveal() {
   updateScoreDisplay();
 
   // Add to history
-  addHistoryItem(roundNum, winner, userMove1, compMove, userMove2, coinState, playerName);
-
-  // Update live community board
-  window.PennyGameLive?.recordRound?.({
-    mode: 'classical',
-    winner,
-    playerName,
-    resultCoin: coinState,
-    summary: `${playerName} ${winner === 'player' ? 'won' : 'lost'} a classical round.`,
-  });
+  addHistoryItem(roundNum, winner, userMove1, compMove, userMove2, coinState);
 
   // Show result overlay
-  showResult(winner, coinState, playerName);
+  showResult(winner, coinState);
 }
 
-function showResult(winner, coin, playerName) {
+function showResult(winner, coin) {
   const isWin = winner === 'player';
   resultEmoji.textContent = isWin ? 'You' : 'CPU';
   resultTitle.textContent = isWin ? 'You Win!' : 'Computer Wins!';
   resultTitle.style.color = isWin ? 'var(--c-primary)' : 'var(--danger)';
   resultSub.textContent   = coin === 'H'
-    ? `${playerName}, the coin landed HEADS — you win this round!`
-    : `${playerName}, the coin landed TAILS — computer wins this round!`;
+    ? 'The coin landed HEADS — you win this round!'
+    : 'The coin landed TAILS — computer wins this round!';
 
   // Move chips
   resultMoves.innerHTML = `
-    <span class="move-chip move-chip-profile">Player: ${escapeHtml(playerName)}</span>
     <span class="move-chip move-chip-${userMove1 === 'flip' ? 'flip' : 'keep'}-c">You: ${userMove1 === 'flip' ? 'Flip' : 'Keep'}</span>
     <span class="move-chip move-chip-keep-c">Computer: ${compMove === 'flip' ? 'Flip' : 'Keep'}</span>
     <span class="move-chip move-chip-${userMove2 === 'flip' ? 'flip' : 'keep'}-c">You: ${userMove2 === 'flip' ? 'Flip' : 'Keep'}</span>
@@ -219,14 +205,13 @@ function updateScoreDisplay() {
   scoreBarComp.style.width = (scores.computer / total * 100) + '%';
 }
 
-function addHistoryItem(round, winner, u1, comp, u2, coin, playerName) {
+function addHistoryItem(round, winner, u1, comp, u2, coin) {
   if (!historyList) return;
   const isWin = winner === 'player';
   const item = document.createElement('div');
   item.className = 'history-item';
   item.innerHTML = `
     <span class="history-round">#${round}</span>
-    <span class="history-player">${escapeHtml(playerName)}</span>
     <span class="history-outcome">${coin === 'H' ? 'H' : 'T'}</span>
     <span class="history-text">
       U:${u1[0].toUpperCase()} · C:${comp[0].toUpperCase()} · U:${u2[0].toUpperCase()}
